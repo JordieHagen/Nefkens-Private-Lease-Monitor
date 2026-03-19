@@ -31,3 +31,11 @@ jobs:
           GMAIL_USERNAME: ${{ secrets.GMAIL_USERNAME }}
           GMAIL_PASSWORD: ${{ secrets.GMAIL_PASSWORD }}
         run: python nefkens_lease_monitor.py
+
+      - name: Opgeslagen prijzen terugzetten in repository
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add nefkens_prices.json
+          git diff --staged --quiet || git commit -m "Prijzen bijgewerkt $(date +'%d-%m-%Y')"
+          git push
