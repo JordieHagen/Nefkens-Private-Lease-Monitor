@@ -1,5 +1,5 @@
 {
-  "bijgewerkt_op": "2026-03-25T09:42:28.122613",
+  "bijgewerkt_op": "2026-03-26T10:19:26.587706",
   "prijzen": {
     "Peugeot": {
       "E-208": "Vanaf €460,- per maand\nOp basis van 48 maanden en 10000 km/j",
@@ -38,7 +38,7 @@
       "DS 4 E-TENSE": "Vanaf €756,- per maand\nOp basis van 72 maanden en 5000 km/j",
       "N°4 PLUG-IN HYBRID": "Vanaf €659,- per maand\nOp basis van 72 maanden en 5000 km/j",
       "N°4 ELEKTRISCH": "Vanaf €645,- per maand\nOp basis van 72 maanden en 5000 km/j",
-      "DS 7": "Vanaf €962,- per maand\nOp basis van 72 maanden en 5000 km/j",
+      "DS 7": "Vanaf €800,- per maand\nOp basis van 72 maanden en 5000 km/j",
       "N°8": "Vanaf €889,- per maand\nOp basis van 72 maanden en 5000 km/j"
     },
     "Opel": {
@@ -46,15 +46,15 @@
       "Corsa": "Vanaf €351,- per maand\nOp basis van 48 maanden en 10000 km/j",
       "Corsa Electric": "Vanaf €375,- per maand\nOp basis van 48 maanden en 10000 km/j",
       "Mokka": "Vanaf €439,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "Mokka Electric": "Vanaf €465,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "Mokka Electric": "Vanaf €420,- per maand\nOp basis van 48 maanden en 10000 km/j",
       "Frontera": "Vanaf €465,- per maand\nOp basis van 48 maanden en 10000 km/j",
       "Frontera Electric": "Vanaf €359,- per maand\nOp basis van 48 maanden en 10000 km/j",
       "Astra 5-deurs": "Vanaf €589,- per maand\nOp basis van 72 maanden en 5000 km/j",
       "Astra Electric": "Vanaf €599,- per maand\nOp basis van 48 maanden en 10000 km/j",
       "Astra Sports Tourer": "Vanaf €602,- per maand\nOp basis van 72 maanden en 5000 km/j",
       "Astra Sports Tourer Electric": "Vanaf €620,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "Grandland": "Vanaf €668,- per maand\nOp basis van 72 maanden en 5000 km/j",
-      "Grandland Electric": "Vanaf €700,- per maand\nOp basis van 48 maanden en 10000 km/j"
+      "Grandland": "Vanaf €659,- per maand\nOp basis van 72 maanden en 5000 km/j",
+      "Grandland Electric": "Vanaf €675,- per maand\nOp basis van 48 maanden en 10000 km/j"
     },
     "Fiat": {
       "500": "Vanaf €349,- per maand\nOp basis van 72 maanden en 5000 km/j",
@@ -64,11 +64,11 @@
       "Grande Panda": "Vanaf €418,- per maand\nOp basis van 72 maanden en 5000 km/j",
       "Grande Panda e": "Vanaf €299,- per maand\nOp basis van 72 maanden en 5000 km/j",
       "Pandina": "Vanaf €399,- per maand\nOp basis van 72 maanden en 5000 km/j",
-      "Topolino": "Vanaf €170,- per maand\nOp basis van 72 maanden en 5000 km/j"
+      "Topolino": "Vanaf €169,- per maand\nOp basis van 72 maanden en 5000 km/j"
     },
     "Alfa Romeo": {
       "JUNIOR": "Vanaf €490,- per maand\nOp basis van 72 maanden en 5000 km/j",
-      "TONALE": "Vanaf €706,- per maand\nOp basis van 72 maanden en 5000 km/j",
+      "TONALE": "Vanaf €692,- per maand\nOp basis van 72 maanden en 5000 km/j",
       "GIULIA": "Vanaf €1.295,- per maand\nOp basis van 72 maanden en 5000 km/j",
       "STELVIO": "Vanaf €1.415,- per maand\nOp basis van 72 maanden en 5000 km/j"
     },
@@ -78,7 +78,7 @@
       "COMPASS": "Vanaf €659,- per maand\nOp basis van 72 maanden en 5000 km/j"
     },
     "Abarth": {
-      "500E": "Vanaf €499,- per maand\nOp basis van 72 maanden en 5000 km/j",
+      "500E": "Vanaf €503,- per maand\nOp basis van 72 maanden en 5000 km/j",
       "600E": "Vanaf €565,- per maand\nOp basis van 72 maanden en 5000 km/j"
     },
     "Lancia": {
