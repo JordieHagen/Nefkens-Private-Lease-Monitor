@@ -1,87 +1,87 @@
 {
-  "bijgewerkt_op": "2026-04-30T09:13:30.985450",
+  "bijgewerkt_op": "2026-05-01T11:23:10.876685",
   "prijzen": {
     "Peugeot": {
       "E-208": "Vanaf €401,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "208": "Vanaf €412,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "E-2008 SUV": "Vanaf €506,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "2008 SUV": "Vanaf €509,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "E-308": "Vanaf €595,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "308": "Vanaf €659,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "E-308 SW": "Vanaf €619,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "308 SW": "Vanaf €678,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "3008": "Vanaf €695,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "NIEUWE E-3008": "Vanaf €659,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "E-408": "Vanaf €636,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "408": "Vanaf €705,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "5008": "Vanaf €755,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "E-5008": "Vanaf €699,- per maand\nOp basis van 48 maanden en 10000 km/j"
+      "208": "Vanaf €423,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "E-2008 SUV": "Vanaf €515,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "2008 SUV": "Vanaf €522,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "E-308": "Vanaf €604,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "308": "Vanaf €674,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "E-308 SW": "Vanaf €629,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "308 SW": "Vanaf €693,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "3008": "Vanaf €711,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "NIEUWE E-3008": "Vanaf €670,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "E-408": "Vanaf €647,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "408": "Vanaf €717,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "5008": "Vanaf €773,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "E-5008": "Vanaf €711,- per maand\nOp basis van 48 maanden en 10000 km/j"
     },
     "Citroën": {
-      "AMI": "VANAF €149,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 5000 KM/J",
-      "ë-C3": "VANAF €349,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
-      "Nieuwe C3": "VANAF €458,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
-      "ë-C3 Aircross": "VANAF €349,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
-      "Nieuwe C3 Aircross": "VANAF €487,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
-      "ë-C4": "VANAF €568,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
-      "C4": "VANAF €635,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
-      "ë-C4 X": "VANAF €606,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
-      "C4 X": "VANAF €664,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
-      "ë-C5 Aircross": "VANAF €708,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
-      "Nieuwe C5 Aircross": "VANAF €607,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
-      "C5 X Mild Hybrid": "VANAF €1.061,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J"
+      "AMI": "VANAF €169,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 5000 KM/J",
+      "ë-C3": "VANAF €368,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
+      "Nieuwe C3": "VANAF €463,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
+      "ë-C3 Aircross": "VANAF €398,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
+      "Nieuwe C3 Aircross": "VANAF €508,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
+      "ë-C4": "VANAF €577,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
+      "C4": "VANAF €648,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
+      "ë-C4 X": "VANAF €615,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
+      "C4 X": "VANAF €678,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
+      "ë-C5 Aircross": "VANAF €718,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
+      "Nieuwe C5 Aircross": "VANAF €622,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J",
+      "C5 X Mild Hybrid": "VANAF €1.080,- PER MAAND\nOP BASIS VAN 48 MAANDEN EN 10000 KM/J"
     },
     "DS Automobiles": {
-      "DS 3": "Vanaf €570,- per maand\nOp basis van 72 maanden en 5000 km/j",
-      "DS 3 E-TENSE": "Vanaf €629,- per maand\nOp basis van 72 maanden en 5000 km/j",
-      "N°4 PLUG-IN HYBRID": "Vanaf €669,- per maand\nOp basis van 72 maanden en 5000 km/j",
-      "N°4 ELEKTRISCH": "Vanaf €649,- per maand\nOp basis van 72 maanden en 5000 km/j",
-      "DS 7": "Vanaf €788,- per maand\nOp basis van 72 maanden en 5000 km/j",
-      "N°8": "Vanaf €879,- per maand\nOp basis van 72 maanden en 5000 km/j"
+      "DS 3": "Vanaf €585,- per maand\nOp basis van 72 maanden en 5000 km/j",
+      "DS 3 E-TENSE": "Vanaf €640,- per maand\nOp basis van 72 maanden en 5000 km/j",
+      "N°4 PLUG-IN HYBRID": "Vanaf €683,- per maand\nOp basis van 72 maanden en 5000 km/j",
+      "N°4 ELEKTRISCH": "Vanaf €660,- per maand\nOp basis van 72 maanden en 5000 km/j",
+      "DS 7": "Vanaf €808,- per maand\nOp basis van 72 maanden en 5000 km/j",
+      "N°8": "Vanaf €893,- per maand\nOp basis van 72 maanden en 5000 km/j"
     },
     "Opel": {
-      "Rocks": "Vanaf €149,- per maand\nOp basis van 48 maanden en 5000 km/j",
-      "Corsa": "Vanaf €358,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "Corsa Electric": "Vanaf €381,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "Mokka": "Vanaf €447,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "Mokka Electric": "Vanaf €450,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "Frontera": "Vanaf €473,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "Frontera Electric": "Vanaf €366,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "Astra 5-deurs": "Vanaf €628,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "Astra Electric": "Vanaf €607,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "Astra Sports Tourer": "Vanaf €643,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "Astra Sports Tourer Electric": "Vanaf €628,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "Grandland": "Vanaf €727,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "Grandland Electric": "Vanaf €683,- per maand\nOp basis van 48 maanden en 10000 km/j"
+      "Rocks": "Vanaf €192,- per maand\nOp basis van 48 maanden en 5000 km/j",
+      "Corsa": "Vanaf €369,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "Corsa Electric": "Vanaf €389,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "Mokka": "Vanaf €460,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "Mokka Electric": "Vanaf €459,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "Frontera": "Vanaf €485,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "Frontera Electric": "Vanaf €374,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "Astra 5-deurs": "Vanaf €641,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "Astra Electric": "Vanaf €616,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "Astra Sports Tourer": "Vanaf €656,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "Astra Sports Tourer Electric": "Vanaf €638,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "Grandland": "Vanaf €743,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "Grandland Electric": "Vanaf €693,- per maand\nOp basis van 48 maanden en 10000 km/j"
     },
     "Fiat": {
-      "500": "Vanaf €349,- per maand\nOp basis van 72 maanden en 5000 km/j",
-      "500e": "Vanaf €299,- per maand\nOp basis van 72 maanden en 5000 km/j",
-      "600": "Vanaf €436,- per maand\nOp basis van 72 maanden en 5000 km/j",
-      "600e": "Vanaf €413,- per maand\nOp basis van 72 maanden en 5000 km/j",
-      "Grande Panda": "Vanaf €437,- per maand\nOp basis van 72 maanden en 5000 km/j",
-      "Grande Panda e": "Vanaf €367,- per maand\nOp basis van 72 maanden en 5000 km/j",
-      "Pandina": "Vanaf €410,- per maand\nOp basis van 72 maanden en 5000 km/j",
-      "Topolino": "Vanaf €169,- per maand\nOp basis van 72 maanden en 5000 km/j"
+      "500": "Vanaf €361,- per maand\nOp basis van 72 maanden en 5000 km/j",
+      "500e": "Vanaf €306,- per maand\nOp basis van 72 maanden en 5000 km/j",
+      "600": "Vanaf €449,- per maand\nOp basis van 72 maanden en 5000 km/j",
+      "600e": "Vanaf €420,- per maand\nOp basis van 72 maanden en 5000 km/j",
+      "Grande Panda": "Vanaf €449,- per maand\nOp basis van 72 maanden en 5000 km/j",
+      "Grande Panda e": "Vanaf €375,- per maand\nOp basis van 72 maanden en 5000 km/j",
+      "Pandina": "Vanaf €421,- per maand\nOp basis van 72 maanden en 5000 km/j",
+      "Topolino": "Vanaf €158,- per maand\nOp basis van 72 maanden en 5000 km/j"
     },
     "Alfa Romeo": {
-      "JUNIOR": "Vanaf €469,- per maand\nOp basis van 72 maanden en 5000 km/j",
-      "TONALE": "Vanaf €667,- per maand\nOp basis van 72 maanden en 5000 km/j"
+      "JUNIOR": "Vanaf €483,- per maand\nOp basis van 72 maanden en 5000 km/j",
+      "TONALE": "Vanaf €683,- per maand\nOp basis van 72 maanden en 5000 km/j"
     },
     "Jeep": {
       "AVENGER": "Vanaf €428,- per maand\nOp basis van 72 maanden en 5000 km/j",
-      "COMPASS": "Vanaf €665,- per maand\nOp basis van 72 maanden en 5000 km/j"
+      "COMPASS": "Vanaf €677,- per maand\nOp basis van 72 maanden en 5000 km/j"
     },
     "Abarth": {
-      "500E": "Vanaf €576,- per maand\nOp basis van 72 maanden en 5000 km/j",
-      "600E": "Vanaf €577,- per maand\nOp basis van 72 maanden en 5000 km/j"
+      "500E": "Vanaf €585,- per maand\nOp basis van 72 maanden en 5000 km/j",
+      "600E": "Vanaf €587,- per maand\nOp basis van 72 maanden en 5000 km/j"
     },
     "Lancia": {
-      "Ypsilon": "Vanaf €501,- per maand\nOp basis van 48 maanden en 10000 km/j",
-      "Ypsilon MHEV": "Vanaf €400,- per maand\nOp basis van 48 maanden en 10000 km/j"
+      "Ypsilon": "Vanaf €509,- per maand\nOp basis van 48 maanden en 10000 km/j",
+      "Ypsilon MHEV": "Vanaf €411,- per maand\nOp basis van 48 maanden en 10000 km/j"
     },
     "Leapmotor": {
-      "T03": "Vanaf €229,- per maand\nOp basis van 72 maanden en 5000 km/j",
+      "T03": "Vanaf €230,- per maand\nOp basis van 72 maanden en 5000 km/j",
       "B10": "Vanaf €459,- per maand\nOp basis van 72 maanden en 5000 km/j",
       "C10": "Vanaf €549,- per maand\nOp basis van 72 maanden en 5000 km/j"
     }
