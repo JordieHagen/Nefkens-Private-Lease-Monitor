@@ -185,41 +185,28 @@ def scrape_standaard_merk(driver: webdriver.Chrome, merk_info: dict) -> Dict[str
             try:
                 safe_name = re.escape(model_naam)
                 
-                # Probeer meerdere patronen - van specifiek naar algemeen
-                patterns = [
-                    # Patroon 1: model + whitespace + € + getallen (meest specifiek)
-                    (safe_name + r'\s+€\s*([\d.,]+)', lambda m: m.group(1)),
-                    
-                    # Patroon 2: model + max 50 chars + getal (voor "BEKIJK DE 208 €389")
-                    (safe_name + r'[^\d]{0,50}([\d]{2,4})', lambda m: m.group(1)),
-                    
-                    # Patroon 3: model + alles tot €
-                    (safe_name + r'[^€]*?€\s*([\d.,]+)', lambda m: m.group(1)),
-                    
-                    # Patroon 4: model + alles tot getal van 2-4 digits
-                    (safe_name + r'\D*([\d]{2,4})\D', lambda m: m.group(1)),
-                ]
+                # VEEL STRIKTER: alleen getallen 200-999 (redelijke lease prijzen)
+                # Patroon: model naam + alles tot getal van 200-999
+                idx = page_text.upper().find(model_naam.upper())
+                if idx < 0:
+                    log.warning("  ✗ %s: niet in pagina gevonden", model_naam)
+                    continue
                 
+                # Zoek DIRECT ACHTER model naam in snippet (300 chars)
+                snippet = page_text[idx:idx+300]
+                
+                # Zoek getallen: 200-999 alleen
                 prijs = None
-                for pattern, extractor in patterns:
-                    match = re.search(pattern, page_text, re.IGNORECASE)
-                    if match:
-                        try:
-                            getal = extractor(match)
-                            # Zorg dat het geen onzin is (0-10 rejected)
-                            if getal and len(str(getal)) >= 2:
-                                getal_num = float(getal.replace(',', '.').replace('.', ''))
-                                if getal_num > 100:  # Minimaal €100
-                                    prijs = _format_prijs(f"€ {getal}")
-                                    break
-                        except:
-                            pass
+                for match in re.finditer(r'\b([2-9]\d{2})\b', snippet):
+                    getal = int(match.group(1))
+                    if 200 <= getal <= 999:  # Redelijke lease prijzen
+                        prijs = _format_prijs(f"€ {getal}")
+                        log.info("  ✓ %s: %s", model_naam, prijs)
+                        prijzen[model_naam] = prijs
+                        break
                 
-                if prijs:
-                    prijzen[model_naam] = prijs
-                    log.info("  ✓ %s: %s", model_naam, prijs)
-                else:
-                    log.warning("  ✗ %s: geen prijs gevonden", model_naam)
+                if not prijs:
+                    log.warning("  ✗ %s: geen prijs gevonden (200-999)", model_naam)
                 
             except Exception as e:
                 log.error("  ✗ Fout bij %s: %s", model_naam, e)
@@ -306,17 +293,21 @@ def scrape_configurator_merk(driver: webdriver.Chrome, merk_info: dict) -> Dict[
                 # Haal "Stel zelf samen" prijs (Overig)
                 config_text = driver.find_element(By.TAG_NAME, "body").text
                 
-                # Flexibele prijsextractie
+                # VEEL STRIKTER: zoek "Stel zelf samen" en pak DIRECT volgende getal 200-999
                 prijs_overig = None
-                # Zoek naar "Stel zelf samen" + volgende getal (flexibel)
-                match = re.search(r'[Ss]tel\s+zelf\s+samen[^\d]{0,100}([\d]{2,4})', config_text, re.IGNORECASE)
+                match = re.search(r'[Ss]tel\s+zelf\s+samen[^\d]{0,100}([2-9]\d{2})\b', config_text, re.IGNORECASE)
                 if match:
-                    prijs_overig = _format_prijs(f"€ {match.group(1)}")
-                else:
-                    # Fallback: eerste prijs in pagina
-                    match = re.search(r'([\d]{2,4})', config_text)
-                    if match:
-                        prijs_overig = _format_prijs(f"€ {match.group(1)}")
+                    getal = int(match.group(1))
+                    if 200 <= getal <= 999:
+                        prijs_overig = _format_prijs(f"€ {getal}")
+                
+                if not prijs_overig:
+                    # Fallback: eerste getal 200-999 in hele pagina
+                    for match in re.finditer(r'\b([2-9]\d{2})\b', config_text):
+                        getal = int(match.group(1))
+                        if 200 <= getal <= 999:
+                            prijs_overig = _format_prijs(f"€ {getal}")
+                            break
                 
                 if prijs_overig:
                     log.info("    ✓ Basis (Overig): %s", prijs_overig)
@@ -365,29 +356,28 @@ def scrape_configurator_merk(driver: webdriver.Chrome, merk_info: dict) -> Dict[
                                     # FLEXIBELE prijsextractie na klik
                                     prijs_e = None
                                     
-                                    # Patroon 1: "Stel zelf samen" + volgende getallen
-                                    # KEY: Zoek naar "Stel zelf samen" en pak DIRECT de getallen erachter
+                                    # Patroon 1: "Stel zelf samen" + volgende getal 200-999
                                     match = re.search(
-                                        r'[Ss]tel\s+zelf\s+samen[^\d]{0,50}([\d]{2,4})',
+                                        r'[Ss]tel\s+zelf\s+samen[^\d]{0,100}([2-9]\d{2})\b',
                                         config_text,
                                         re.IGNORECASE
                                     )
                                     
                                     if match:
-                                        potential_prijs = match.group(1)
+                                        potential_prijs = int(match.group(1))
                                         # Valideer: moet tussen 200-1000 zijn EN ANDERS dan Overig
-                                        if 200 <= int(potential_prijs) <= 1000:
+                                        if 200 <= potential_prijs <= 999:
                                             # SLEUTEL: Controleer of dit ECHT Elektrisch is (andere prijs dan Overig)
                                             overig_num = int(prijs_overig.replace('€ ', '').replace(',-', ''))
-                                            if int(potential_prijs) != overig_num:
-                                                prijs_e = potential_prijs
+                                            if potential_prijs != overig_num:
+                                                prijs_e = str(potential_prijs)
                                                 log.info("        ✓ Gevonden via 'Stel zelf samen': €%s (anders dan Overig %s)", prijs_e, prijs_overig)
                                             else:
                                                 log.info("        ✗ Prijs is gelijk aan Overig, skipping...")
                                     
-                                    # Patroon 2: Fallback - zoek alle getallen in hele pagina, pak grootste
+                                    # Patroon 2: Fallback - zoek alle getallen 200-999, pak grootste (anders dan Overig)
                                     if not prijs_e:
-                                        getallen = [int(n) for n in re.findall(r'\b(\d{2,4})\b', config_text) if 200 <= int(n) <= 1000]
+                                        getallen = [int(n) for n in re.findall(r'\b([2-9]\d{2})\b', config_text) if 200 <= int(n) <= 999]
                                         if getallen:
                                             prijs_e_num = max(getallen)
                                             overig_num = int(prijs_overig.replace('€ ', '').replace(',-', ''))
