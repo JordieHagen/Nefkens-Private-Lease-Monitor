@@ -81,42 +81,185 @@ def get_driver():
 # SCRAPER
 # ─────────────────────────────────────────────
 
+# Merken waarbij we via de configurator onderscheid maken tussen elektrisch en overig
+CONFIGURATOR_MERKEN = ["Alfa Romeo", "Jeep"]
+
+def scrape_configurator_prijzen(driver, model_naam, configurator_url):
+    """
+    Bezoekt de configurator van een model en haalt zowel de elektrische
+    als de niet-elektrische vanafprijs op door op de brandstof-tabs te klikken.
+    Wacht na elke klik tot de prijs daadwerkelijk is bijgewerkt.
+    """
+    import re
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+
+    prijzen = {}
+
+    def haal_huidige_prijs():
+        """Lees de prominente prijs uit de pagina."""
+        try:
+            # Probeer eerst specifieke prijs-elementen
+            for selector in [
+                "[class*='price']", "[class*='Price']",
+                "[class*='amount']", "[class*='maand']",
+                "[class*='tarief']",
+            ]:
+                els = driver.find_elements(By.CSS_SELECTOR, selector)
+                for el in els:
+                    tekst = el.text.strip()
+                    match = re.search(r'€\s*([\d.,]+)', tekst)
+                    if match:
+                        return match.group(1)
+            # Fallback: eerste prijs in de pagina
+            tekst = driver.find_element(By.TAG_NAME, "body").text
+            match = re.search(r'€\s*([\d.,]+)', tekst)
+            if match:
+                return match.group(1)
+        except Exception:
+            pass
+        return None
+
+    try:
+        driver.get(configurator_url)
+        time.sleep(6)
+
+        # Lees de beginprijs (dit is standaard de niet-elektrische prijs)
+        prijs_overig = haal_huidige_prijs()
+        if prijs_overig:
+            prijzen["Overig"] = f"€ {prijs_overig},-"
+            log.info("    -> %s Overig: € %s,-", model_naam, prijs_overig)
+
+        # Klik op de "Elektrisch" tab
+        elektrisch_geklikt = False
+        for zoekterm in ["Elektrisch", "Electric", "BEV", "Elettrica"]:
+            try:
+                elementen = driver.find_elements(By.XPATH,
+                    f"//*[normalize-space(text())='{zoekterm}' or contains(text(),'{zoekterm}')]"
+                )
+                for el in elementen:
+                    if el.tag_name.lower() in ["button", "label", "span", "div", "li", "a"]:
+                        # Sla navigatielinks over
+                        href = el.get_attribute("href") or ""
+                        if "elektrisch-rijden" in href or "hybride-rijden" in href:
+                            continue
+                        driver.execute_script("arguments[0].click();", el)
+                        time.sleep(4)
+                        elektrisch_geklikt = True
+                        log.info("    -> '%s' tab geklikt voor %s", zoekterm, model_naam)
+                        break
+                if elektrisch_geklikt:
+                    break
+            except Exception:
+                continue
+
+        if elektrisch_geklikt:
+            # Wacht tot de prijs verandert
+            prijs_elektrisch = None
+            for _ in range(5):
+                nieuwe_prijs = haal_huidige_prijs()
+                if nieuwe_prijs and nieuwe_prijs != prijs_overig:
+                    prijs_elektrisch = nieuwe_prijs
+                    break
+                time.sleep(2)
+
+            if prijs_elektrisch:
+                prijzen["Elektrisch"] = f"€ {prijs_elektrisch},-"
+                log.info("    -> %s Elektrisch: € %s,-", model_naam, prijs_elektrisch)
+            else:
+                log.warning("    -> %s: elektrische prijs niet gevonden of gelijk aan overig", model_naam)
+        else:
+            log.info("    -> %s: geen elektrisch tab gevonden (model heeft alleen overige aandrijving)", model_naam)
+
+    except Exception as e:
+        log.error("  -> Fout bij configurator %s: %s", model_naam, e)
+
+    return prijzen
+
+
 def scrape_merk(driver, merk):
     log.info("Scrapen: %s", merk["naam"])
     prijzen = {}
+    import re
+
     try:
+        # Stap 1: laad de overzichtspagina om alle modelnamen + URLs op te halen
         driver.get(merk["url"])
         time.sleep(5)
 
-        card_selectors = [
-            ("[class*='model-card']",   "[class*='model-name'], h2, h3", "[class*='price'], [class*='vanaf'], [class*='amount']"),
-            ("[class*='ModelCard']",    "[class*='name'], h2, h3",       "[class*='Price'], [class*='price']"),
-            ("[class*='vehicle-card']", "h2, h3",                        "[class*='price']"),
-            ("article",                 "h2, h3",                        "[class*='price'], [class*='vanaf']"),
-        ]
+        links = driver.find_elements(By.CSS_SELECTOR, "a[href*='/modellen/']")
 
-        for card_sel, name_sel, price_sel in card_selectors:
-            cards = driver.find_elements(By.CSS_SELECTOR, card_sel)
-            if not cards:
-                continue
-            for card in cards:
-                try:
-                    name  = card.find_element(By.CSS_SELECTOR, name_sel).text.strip()
-                    price = card.find_element(By.CSS_SELECTOR, price_sel).text.strip()
-                    if name and price and ("€" in price or ",-" in price):
-                        prijzen[name] = price
-                except Exception:
-                    continue
-            if prijzen:
-                log.info("  -> %d modellen gevonden", len(prijzen))
-                break
+        model_urls = {}
+        for link in links:
+            href = link.get_attribute("href") or ""
+            if re.search(r'/modellen/[A-Za-z][^/]+$', href):
+                if "voorraad" not in href and "occasions" not in href:
+                    model_naam = href.split("/modellen/")[-1]
+                    model_urls[model_naam] = href
 
-        if not prijzen:
-            log.warning("  -> Geen prijzen gevonden voor %s", merk["naam"])
+        log.info("  -> %d modelpagina's gevonden", len(model_urls))
+
+        # Stap 2: bezoek elke modelpagina
+        for model_naam, model_url in model_urls.items():
+            try:
+                # Voor Alfa Romeo en Jeep: gebruik configurator voor elektrisch/overig splitsing
+                if merk["naam"] in CONFIGURATOR_MERKEN:
+                    configurator_url = merk["url"].replace("/modellen", f"/configurator/{model_naam}")
+                    config_prijzen = scrape_configurator_prijzen(driver, model_naam, configurator_url)
+
+                    if config_prijzen:
+                        for aandrijving, prijs in config_prijzen.items():
+                            sleutel = f"{model_naam} ({aandrijving})"
+                            prijzen[sleutel] = prijs
+                    else:
+                        # Fallback naar modelpagina
+                        driver.get(model_url)
+                        time.sleep(4)
+                        page_text = driver.find_element(By.TAG_NAME, "body").text
+                        prijs_match = re.search(r'[Ss]tel\s+zelf\s+samen[^\€]*?(€\s*[\d.,]+[,-]*)', page_text)
+                        if prijs_match:
+                            prijzen[model_naam] = prijs_match.group(1).strip()
+
+                else:
+                    # Alle andere merken: haal "zelf samenstellen" prijs op van modelpagina
+                    driver.get(model_url)
+                    time.sleep(4)
+
+                    page_text = driver.find_element(By.TAG_NAME, "body").text
+
+                    patronen = [
+                        r'[Ss]tel\s+zelf\s+samen[^\n]*\n[^\n]*vanaf\s*(€\s*[\d.,]+[,-]*)',
+                        r'[Ss]tel\s+zelf\s+samen[^\€]*?(€\s*[\d.,]+[,-]*)',
+                        r'[Zz]elf\s+samen[^\€]*?(€\s*[\d.,]+[,-]*)',
+                    ]
+
+                    prijs = None
+                    for patroon in patronen:
+                        match = re.search(patroon, page_text, re.IGNORECASE)
+                        if match:
+                            prijs = match.group(1).strip()
+                            break
+
+                    if not prijs:
+                        alle_prijzen = re.findall(r'€\s*[\d.,]+[,-]*', page_text)
+                        if alle_prijzen:
+                            prijs = alle_prijzen[0].strip()
+
+                    if prijs:
+                        prijzen[model_naam] = prijs
+                        log.info("  -> %s: %s", model_naam, prijs)
+                    else:
+                        log.warning("  -> %s: geen prijs gevonden", model_naam)
+
+            except Exception as e:
+                log.error("  -> Fout bij modelpagina %s: %s", model_naam, e)
+
+            time.sleep(2)
 
     except Exception as e:
         log.error("  -> Fout bij %s: %s", merk["naam"], e)
 
+    log.info("  -> Totaal %d modellen met prijs", len(prijzen))
     return prijzen
 
 # ─────────────────────────────────────────────
