@@ -122,13 +122,21 @@ def scrape_configurator_prijzen(driver, model_naam, configurator_url):
 
     try:
         driver.get(configurator_url)
-        time.sleep(6)
+        time.sleep(8)  # Extra tijd voor zware configurator-pagina
+
+        log.info("    -> Configurator geladen: %s", configurator_url)
+
+        # Log alle klikbare elementen met brandstoftermen voor diagnose
+        alle_teksten = driver.find_element(By.TAG_NAME, "body").text
+        log.info("    -> Pagina tekst snippet: %s", alle_teksten[:300].replace('\n', ' '))
 
         # Lees de beginprijs (dit is standaard de niet-elektrische prijs)
         prijs_overig = haal_huidige_prijs()
         if prijs_overig:
             prijzen["Overig"] = f"€ {prijs_overig},-"
             log.info("    -> %s Overig: € %s,-", model_naam, prijs_overig)
+        else:
+            log.warning("    -> %s: geen beginprijs gevonden", model_naam)
 
         # Klik op de "Elektrisch" tab
         elektrisch_geklikt = False
@@ -137,20 +145,21 @@ def scrape_configurator_prijzen(driver, model_naam, configurator_url):
                 elementen = driver.find_elements(By.XPATH,
                     f"//*[normalize-space(text())='{zoekterm}' or contains(text(),'{zoekterm}')]"
                 )
+                log.info("    -> Zoekterm '%s': %d elementen gevonden", zoekterm, len(elementen))
                 for el in elementen:
                     if el.tag_name.lower() in ["button", "label", "span", "div", "li", "a"]:
-                        # Sla navigatielinks over
                         href = el.get_attribute("href") or ""
                         if "elektrisch-rijden" in href or "hybride-rijden" in href:
                             continue
+                        log.info("    -> Klikken op '%s' element (tag: %s)", zoekterm, el.tag_name)
                         driver.execute_script("arguments[0].click();", el)
-                        time.sleep(4)
+                        time.sleep(5)
                         elektrisch_geklikt = True
-                        log.info("    -> '%s' tab geklikt voor %s", zoekterm, model_naam)
                         break
                 if elektrisch_geklikt:
                     break
-            except Exception:
+            except Exception as e:
+                log.warning("    -> Fout bij zoeken '%s': %s", zoekterm, e)
                 continue
 
         if elektrisch_geklikt:
