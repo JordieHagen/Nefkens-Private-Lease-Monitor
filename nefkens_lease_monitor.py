@@ -98,6 +98,34 @@ def clean_model_name(raw_name: str) -> str:
     name = " ".join(name.split())
     return name
 
+def _format_prijs(prijs_str: str) -> str:
+    """
+    Formatteer prijs correct:
+    - "€ 389" → "€ 389,-"
+    - "€389,99" → "€ 390,-" (afgerond)
+    - "€ 389,-" → "€ 389,-"
+    """
+    if not prijs_str:
+        return ""
+    
+    # Extract numbers
+    match = re.search(r'€\s*([\d.,]+)', prijs_str)
+    if not match:
+        return prijs_str
+    
+    prijs_num = match.group(1)
+    
+    # Vervang komma's en punten
+    prijs_num = prijs_num.replace(".", "").replace(",", ".")
+    
+    try:
+        prijs_float = float(prijs_num)
+        # Rond af naar dichtbijzijnde tiental eurocent (€X,X0)
+        prijs_rounded = round(prijs_float)
+        return f"€ {prijs_rounded},-"
+    except:
+        return prijs_str
+
 # ─────────────────────────────────────────────
 # SCRAPER: STANDAARD (OVERZICHT)
 # ─────────────────────────────────────────────
@@ -142,11 +170,14 @@ def scrape_standaard_merk(driver: webdriver.Chrome, merk_info: dict) -> Dict[str
         for model_naam in model_names:
             try:
                 safe_name = re.escape(model_naam)
-                pattern = safe_name + r'[^\€]*?(€\s*[\d.,]+)'
+                # STRICT: alleen whitespace/newlines tussen model en prijs
+                # [^\€\w]* = alles wat geen € of word char is (dus spaties, tabs, newlines)
+                # Dit voorkomt dat we tekst van andere modellen/elementen oppakken
+                pattern = safe_name + r'\s*(?:€|\(€)[^\d]*?([\d.,]+)'
                 match = re.search(pattern, page_text, re.IGNORECASE)
                 
                 if match:
-                    prijs = match.group(1).strip()
+                    prijs = _format_prijs(f"€ {match.group(1)}")
                     prijzen[model_naam] = prijs
                     log.info("  ✓ %s: %s", model_naam, prijs)
                 else:
@@ -218,7 +249,15 @@ def scrape_configurator_merk(driver: webdriver.Chrome, merk_info: dict) -> Dict[
                     pass
                 
                 if not config_url:
-                    log.warning("  ✗ %s: geen configurator link", model_naam)
+                    log.warning("  ✗ %s: geen configurator link, fallback naar overzicht", model_naam)
+                    # Fallback: gebruik prijs uit overzicht
+                    safe_name = re.escape(model_naam)
+                    pattern = safe_name + r'\s*(?:€|\(€)[^\d]*?([\d.,]+)'
+                    match = re.search(pattern, page_text, re.IGNORECASE)
+                    if match:
+                        prijs_overig = _format_prijs(f"€ {match.group(1)}")
+                        log.info("  ✓ %s (overzicht): %s", model_naam, prijs_overig)
+                        prijzen[model_naam] = prijs_overig
                     continue
                 
                 # Maak URL absoluut
@@ -233,15 +272,15 @@ def scrape_configurator_merk(driver: webdriver.Chrome, merk_info: dict) -> Dict[
                 # Haal "Stel zelf samen" prijs
                 config_text = driver.find_element(By.TAG_NAME, "body").text
                 match = re.search(
-                    r'[Ss]tel\s+zelf\s+samen[^\€]*?(€\s*[\d.,]+)',
+                    r'[Ss]tel\s+zelf\s+samen\s*(?:€|\(€)[^\d]*?([\d.,]+)',
                     config_text,
                     re.IGNORECASE | re.DOTALL
                 )
-                prijs_overig = match.group(1).strip() if match else None
+                prijs_overig = _format_prijs(f"€ {match.group(1)}") if match else None
                 
                 if not prijs_overig:
                     match = re.search(r'€\s*([\d.,]+)', config_text)
-                    prijs_overig = f"€ {match.group(1)},-" if match else None
+                    prijs_overig = _format_prijs(f"€ {match.group(1)}") if match else None
                 
                 if prijs_overig:
                     log.info("    ✓ Basis (Overig): %s", prijs_overig)
@@ -249,37 +288,66 @@ def scrape_configurator_merk(driver: webdriver.Chrome, merk_info: dict) -> Dict[
                 # Probeer Elektrisch
                 prijs_elektrisch = None
                 if heeft_elektrisch:
-                    for term in ["Elektrisch", "Electric", "BEV"]:
+                    log.info("    → Zoeken Elektrisch tab...")
+                    
+                    # Terug naar originele pagina eerst (reset state)
+                    driver.get(config_url)
+                    time.sleep(3)
+                    
+                    for term in ["Elektrisch", "Electric", "BEV", "E-"]:
                         try:
                             els = driver.find_elements(
                                 By.XPATH,
                                 f"//*[contains(normalize-space(), '{term}')]"
                             )
+                            
+                            if els:
+                                log.info("      → Gevonden %d elementen met '%s'", len(els), term)
+                            
                             for el in els:
-                                if el.is_displayed():
+                                try:
+                                    # Check if clickable
+                                    if not el.is_displayed():
+                                        continue
+                                    
+                                    tag = el.tag_name.lower()
+                                    if tag not in ["button", "label", "span", "li", "div", "a"]:
+                                        continue
+                                    
+                                    log.info("      → Click '%s' (%s)", term, tag)
                                     driver.execute_script("arguments[0].click();", el)
                                     time.sleep(4)
                                     
                                     config_text = driver.find_element(By.TAG_NAME, "body").text
+                                    
+                                    # Zoek "Stel zelf samen" prijs
                                     match = re.search(
-                                        r'[Ss]tel\s+zelf\s+samen[^\€]*?(€\s*[\d.,]+)',
+                                        r'[Ss]tel\s+zelf\s+samen\s*(?:€|\(€)[^\d]*?([\d.,]+)',
                                         config_text,
                                         re.IGNORECASE | re.DOTALL
                                     )
                                     
                                     if match:
-                                        prijs_elektrisch = match.group(1).strip()
-                                    else:
-                                        match = re.search(r'€\s*([\d.,]+)', config_text)
-                                        prijs_elektrisch = f"€ {match.group(1)},-" if match else None
-                                    
-                                    if prijs_elektrisch:
+                                        prijs_e = f"€ {match.group(1)}"
+                                        prijs_elektrisch = _format_prijs(prijs_e)
                                         log.info("    ✓ Elektrisch: %s", prijs_elektrisch)
                                         break
+                                    else:
+                                        # Fallback eerste prijs
+                                        match = re.search(r'€\s*([\d.,]+)', config_text)
+                                        if match:
+                                            prijs_e = match.group(1)
+                                            prijs_elektrisch = _format_prijs(f"€ {prijs_e},-")
+                                            log.info("    ✓ Elektrisch (fallback): %s", prijs_elektrisch)
+                                            break
+                                except Exception as e:
+                                    log.debug("      → Click error: %s", e)
+                                    continue
+                            
                             if prijs_elektrisch:
                                 break
-                        except:
-                            pass
+                        except Exception as e:
+                            log.debug("    → Fout bij '%s': %s", term, e)
                 
                 # Sla op
                 if prijs_elektrisch:
