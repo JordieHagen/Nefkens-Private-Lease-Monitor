@@ -41,4 +41,5 @@ jobs:
           git config user.email "github-actions@github.com"
           git add nefkens_prices.json
           git diff --staged --quiet || git commit -m "Prijzen bijgewerkt $(date +'%d-%m-%Y')"
+          git pull --rebase origin main
           git push
