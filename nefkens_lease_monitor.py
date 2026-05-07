@@ -102,25 +102,39 @@ def _format_prijs(prijs_str: str) -> str:
     """
     Formatteer prijs correct:
     - "€ 389" → "€ 389,-"
-    - "€389,99" → "€ 390,-" (afgerond)
+    - "389,99" → "€ 390,-" (afgerond)
     - "€ 389,-" → "€ 389,-"
     """
     if not prijs_str:
         return ""
     
-    # Extract numbers
-    match = re.search(r'€\s*([\d.,]+)', prijs_str)
+    # Verwijder whitespace
+    prijs_str = prijs_str.strip()
+    
+    # Extract ALLEEN getallen
+    match = re.search(r'[\d.,]+', prijs_str)
     if not match:
-        return prijs_str
+        return ""
     
-    prijs_num = match.group(1)
+    prijs_num = match.group(0)
     
-    # Vervang komma's en punten
-    prijs_num = prijs_num.replace(".", "").replace(",", ".")
+    # Normaliseer komma/punt
+    # Stel: "389,99" of "389.99" of "389,99" → allemaal "389.99"
+    # Stel: "38999" (geen scheidingsteken) → "38999"
+    
+    # Als beide komma en punt aanwezig: komma is decimaal
+    if ',' in prijs_num and '.' in prijs_num:
+        prijs_num = prijs_num.replace('.', '').replace(',', '.')
+    elif ',' in prijs_num:
+        # Komma als decimaal (Europees format)
+        prijs_num = prijs_num.replace(',', '.')
+    elif '.' in prijs_num:
+        # Punt als decimaal
+        pass
     
     try:
         prijs_float = float(prijs_num)
-        # Rond af naar dichtbijzijnde tiental eurocent (€X,X0)
+        # Rond af naar dichtbijzijnde euro
         prijs_rounded = round(prijs_float)
         return f"€ {prijs_rounded},-"
     except:
@@ -170,14 +184,38 @@ def scrape_standaard_merk(driver: webdriver.Chrome, merk_info: dict) -> Dict[str
         for model_naam in model_names:
             try:
                 safe_name = re.escape(model_naam)
-                # STRICT: alleen whitespace/newlines tussen model en prijs
-                # [^\€\w]* = alles wat geen € of word char is (dus spaties, tabs, newlines)
-                # Dit voorkomt dat we tekst van andere modellen/elementen oppakken
-                pattern = safe_name + r'\s*(?:€|\(€)[^\d]*?([\d.,]+)'
-                match = re.search(pattern, page_text, re.IGNORECASE)
                 
-                if match:
-                    prijs = _format_prijs(f"€ {match.group(1)}")
+                # Probeer meerdere patronen - van specifiek naar algemeen
+                patterns = [
+                    # Patroon 1: model + whitespace + € + getallen (meest specifiek)
+                    (safe_name + r'\s+€\s*([\d.,]+)', lambda m: m.group(1)),
+                    
+                    # Patroon 2: model + max 50 chars + getal (voor "BEKIJK DE 208 €389")
+                    (safe_name + r'[^\d]{0,50}([\d]{2,4})', lambda m: m.group(1)),
+                    
+                    # Patroon 3: model + alles tot €
+                    (safe_name + r'[^€]*?€\s*([\d.,]+)', lambda m: m.group(1)),
+                    
+                    # Patroon 4: model + alles tot getal van 2-4 digits
+                    (safe_name + r'\D*([\d]{2,4})\D', lambda m: m.group(1)),
+                ]
+                
+                prijs = None
+                for pattern, extractor in patterns:
+                    match = re.search(pattern, page_text, re.IGNORECASE)
+                    if match:
+                        try:
+                            getal = extractor(match)
+                            # Zorg dat het geen onzin is (0-10 rejected)
+                            if getal and len(str(getal)) >= 2:
+                                getal_num = float(getal.replace(',', '.').replace('.', ''))
+                                if getal_num > 100:  # Minimaal €100
+                                    prijs = _format_prijs(f"€ {getal}")
+                                    break
+                        except:
+                            pass
+                
+                if prijs:
                     prijzen[model_naam] = prijs
                     log.info("  ✓ %s: %s", model_naam, prijs)
                 else:
@@ -235,10 +273,6 @@ def scrape_configurator_merk(driver: webdriver.Chrome, merk_info: dict) -> Dict[
                 
                 page_text = driver.find_element(By.TAG_NAME, "body").text
                 
-                # Detecteer aandrijvingen
-                heeft_elektrisch = bool(re.search(r'[Ee]lektrisch|[Ee]lectric|BEV', page_text))
-                heeft_overig = bool(re.search(r'[Bb]enzine|[Hh]ybride|[Pp]lugin|PHEV', page_text))
-                
                 # Vind configurator link
                 config_url = None
                 try:
@@ -269,97 +303,136 @@ def scrape_configurator_merk(driver: webdriver.Chrome, merk_info: dict) -> Dict[
                 driver.get(config_url)
                 time.sleep(5)
                 
-                # Haal "Stel zelf samen" prijs
+                # Haal "Stel zelf samen" prijs (Overig)
                 config_text = driver.find_element(By.TAG_NAME, "body").text
-                match = re.search(
-                    r'[Ss]tel\s+zelf\s+samen\s*(?:€|\(€)[^\d]*?([\d.,]+)',
-                    config_text,
-                    re.IGNORECASE | re.DOTALL
-                )
-                prijs_overig = _format_prijs(f"€ {match.group(1)}") if match else None
                 
-                if not prijs_overig:
-                    match = re.search(r'€\s*([\d.,]+)', config_text)
-                    prijs_overig = _format_prijs(f"€ {match.group(1)}") if match else None
+                # Flexibele prijsextractie
+                prijs_overig = None
+                # Zoek naar "Stel zelf samen" + volgende getal (flexibel)
+                match = re.search(r'[Ss]tel\s+zelf\s+samen[^\d]{0,100}([\d]{2,4})', config_text, re.IGNORECASE)
+                if match:
+                    prijs_overig = _format_prijs(f"€ {match.group(1)}")
+                else:
+                    # Fallback: eerste prijs in pagina
+                    match = re.search(r'([\d]{2,4})', config_text)
+                    if match:
+                        prijs_overig = _format_prijs(f"€ {match.group(1)}")
                 
                 if prijs_overig:
                     log.info("    ✓ Basis (Overig): %s", prijs_overig)
                 
                 # Probeer Elektrisch
+                # BELANGRIJKA: Detecteer HIER in configurator, niet eerder!
                 prijs_elektrisch = None
-                if heeft_elektrisch:
+                
+                # Check of Elektrisch tab ECHT beschikbaar is
+                has_elektrisch_tab = False
+                for term in ["Elektrisch", "Electric", "BEV", "E-", "Batteria"]:
+                    if re.search(f'//*[contains(., "{term}")]', config_text):
+                        has_elektrisch_tab = True
+                        break
+                
+                if has_elektrisch_tab:
                     log.info("    → Zoeken Elektrisch tab...")
                     
-                    # Terug naar originele pagina eerst (reset state)
+                    # Reset naar configurator pagina
                     driver.get(config_url)
                     time.sleep(3)
                     
-                    for term in ["Elektrisch", "Electric", "BEV", "E-"]:
+                    for term in ["Elektrisch", "Electric", "BEV", "E-", "Batteria"]:
+                        tab_geklikt = False
+                        
                         try:
                             els = driver.find_elements(
                                 By.XPATH,
                                 f"//*[contains(normalize-space(), '{term}')]"
                             )
                             
-                            if els:
-                                log.info("      → Gevonden %d elementen met '%s'", len(els), term)
+                            log.info("      → Term '%s': %d elementen", term, len(els))
                             
                             for el in els:
                                 try:
-                                    # Check if clickable
                                     if not el.is_displayed():
                                         continue
                                     
-                                    tag = el.tag_name.lower()
-                                    if tag not in ["button", "label", "span", "li", "div", "a"]:
-                                        continue
-                                    
-                                    log.info("      → Click '%s' (%s)", term, tag)
+                                    # Probeer te klikken
                                     driver.execute_script("arguments[0].click();", el)
-                                    time.sleep(4)
+                                    log.info("        → Geklikt, wachten op update...")
+                                    time.sleep(5)  # Wacht langer voor pagina update
                                     
                                     config_text = driver.find_element(By.TAG_NAME, "body").text
                                     
-                                    # Zoek "Stel zelf samen" prijs
+                                    # FLEXIBELE prijsextractie na klik
+                                    prijs_e = None
+                                    
+                                    # Patroon 1: "Stel zelf samen" + volgende getallen
+                                    # KEY: Zoek naar "Stel zelf samen" en pak DIRECT de getallen erachter
                                     match = re.search(
-                                        r'[Ss]tel\s+zelf\s+samen\s*(?:€|\(€)[^\d]*?([\d.,]+)',
+                                        r'[Ss]tel\s+zelf\s+samen[^\d]{0,50}([\d]{2,4})',
                                         config_text,
-                                        re.IGNORECASE | re.DOTALL
+                                        re.IGNORECASE
                                     )
                                     
                                     if match:
-                                        prijs_e = f"€ {match.group(1)}"
-                                        prijs_elektrisch = _format_prijs(prijs_e)
+                                        potential_prijs = match.group(1)
+                                        # Valideer: moet tussen 200-1000 zijn EN ANDERS dan Overig
+                                        if 200 <= int(potential_prijs) <= 1000:
+                                            # SLEUTEL: Controleer of dit ECHT Elektrisch is (andere prijs dan Overig)
+                                            overig_num = int(prijs_overig.replace('€ ', '').replace(',-', ''))
+                                            if int(potential_prijs) != overig_num:
+                                                prijs_e = potential_prijs
+                                                log.info("        ✓ Gevonden via 'Stel zelf samen': €%s (anders dan Overig %s)", prijs_e, prijs_overig)
+                                            else:
+                                                log.info("        ✗ Prijs is gelijk aan Overig, skipping...")
+                                    
+                                    # Patroon 2: Fallback - zoek alle getallen in hele pagina, pak grootste
+                                    if not prijs_e:
+                                        getallen = [int(n) for n in re.findall(r'\b(\d{2,4})\b', config_text) if 200 <= int(n) <= 1000]
+                                        if getallen:
+                                            prijs_e_num = max(getallen)
+                                            overig_num = int(prijs_overig.replace('€ ', '').replace(',-', ''))
+                                            # Alleen accepteren als ANDERS dan Overig
+                                            if prijs_e_num != overig_num:
+                                                prijs_e = str(prijs_e_num)
+                                                log.info("        ✓ Gevonden via fallback max: €%s (anders dan Overig %s)", prijs_e, prijs_overig)
+                                            else:
+                                                log.info("        ✗ Grootste getal is gelijk aan Overig, skipping...")
+                                    
+                                    if prijs_e:
+                                        prijs_elektrisch = _format_prijs(f"€ {prijs_e}")
                                         log.info("    ✓ Elektrisch: %s", prijs_elektrisch)
+                                        tab_geklikt = True
                                         break
                                     else:
-                                        # Fallback eerste prijs
-                                        match = re.search(r'€\s*([\d.,]+)', config_text)
-                                        if match:
-                                            prijs_e = match.group(1)
-                                            prijs_elektrisch = _format_prijs(f"€ {prijs_e},-")
-                                            log.info("    ✓ Elektrisch (fallback): %s", prijs_elektrisch)
-                                            break
+                                        log.info("        ✗ Geen prijs na klik op '%s'", term)
+                                
                                 except Exception as e:
-                                    log.debug("      → Click error: %s", e)
+                                    log.debug("        Fout bij klik: %s", e)
                                     continue
                             
-                            if prijs_elektrisch:
+                            if tab_geklikt:
                                 break
+                        
                         except Exception as e:
-                            log.debug("    → Fout bij '%s': %s", term, e)
+                            log.debug("      Fout bij term '%s': %s", term, e)
                 
-                # Sla op
-                if prijs_elektrisch:
-                    prijzen[f"{model_naam} (Elektrisch)"] = prijs_elektrisch
+                if not prijs_elektrisch:
+                    log.info("    ℹ Geen elektrische prijs gevonden")
                 
+                # Sla op - ALLEEN wat we echt hebben gevonden
                 if prijs_overig:
                     if prijs_elektrisch:
+                        # Beide beschikbaar
+                        prijzen[f"{model_naam} (Elektrisch)"] = prijs_elektrisch
                         prijzen[f"{model_naam} (Overig)"] = prijs_overig
+                        log.info("  ✓ %s (Elektrisch): %s", model_naam, prijs_elektrisch)
+                        log.info("  ✓ %s (Overig): %s", model_naam, prijs_overig)
                     else:
+                        # ALLEEN Overig (geen Elektrisch beschikbaar)
                         prijzen[model_naam] = prijs_overig
+                        log.info("  ✓ %s: %s (geen Elektrisch beschikbaar)", model_naam, prijs_overig)
                 else:
-                    log.warning("  ✗ %s: geen prijzen gevonden", model_naam)
+                    log.warning("  ✗ %s: geen Overig prijs gevonden", model_naam)
                 
             except Exception as e:
                 log.error("  ✗ Fout bij %s: %s", model_naam, e)
