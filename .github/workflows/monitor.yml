@@ -2,7 +2,7 @@ name: Nefkens Private Lease Monitor
 
 on:
   schedule:
-    - cron: '0 7 * * *'
+    - cron: '0 5 * * *'   # 05:00 UTC = 07:00 NL zomertijd — rekening houdend met GitHub vertragingen
   workflow_dispatch:
 
 env:
