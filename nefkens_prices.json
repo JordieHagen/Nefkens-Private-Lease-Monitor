@@ -1,66 +1,83 @@
 {
-  "bijgewerkt_op": "2026-05-07T17:32:36.595350",
+  "bijgewerkt_op": "2026-05-07T18:05:07.007298",
   "prijzen": {
     "Peugeot": {
-      "BEKIJK DE E-208": "€ 419,",
-      "BEKIJK DE 208": "€ 431,",
-      "BEKIJK DE E-2008 SUV": "€ 548,",
-      "BEKIJK DE 2008 SUV": "€ 522,",
-      "BEKIJK DE E-308": "€ 604,",
-      "BEKIJK DE 308": "€ 674,",
-      "BEKIJK DE E-308 SW": "€ 629,",
-      "BEKIJK DE 308 SW": "€ 693,",
-      "BEKIJK DE 3008": "€ 711,",
-      "BEKIJK DE NIEUWE E-3008": "€ 670,",
-      "BEKIJK DE E-408": "€ 655,",
-      "BEKIJK DE 408": "€ 717,",
-      "BEKIJK DE 5008": "€ 773,",
-      "BEKIJK DE E-5008": "€ 711,"
+      "BEKIJK DE E-208": "€423,",
+      "BEKIJK DE 208": "€515,",
+      "BEKIJK DE E-2008 SUV": "€522,",
+      "BEKIJK DE 2008 SUV": "€604,",
+      "BEKIJK DE E-308": "€674,",
+      "BEKIJK DE 308": "€629,",
+      "BEKIJK DE E-308 SW": "€693,",
+      "BEKIJK DE 308 SW": "€711,",
+      "BEKIJK DE 3008": "€670,",
+      "BEKIJK DE NIEUWE E-3008": "€647,",
+      "BEKIJK DE E-408": "€717,",
+      "BEKIJK DE 408": "€773,",
+      "BEKIJK DE 5008": "€711,",
+      "BEKIJK DE E-5008": "€0,10"
     },
     "Citroën": {
-      "Bekijk de AMI": "€ 169,",
-      "Bekijk de ë-C3": "€ 369,",
-      "Bekijk de Nieuwe C3": "€ 479,",
-      "Bekijk de ë-C3 Aircross": "€ 399,",
-      "Bekijk de Nieuwe C3 Aircross": "€ 499,",
-      "Bekijk de ë-C4": "€ 599,",
-      "Bekijk de C4": "€ 649,",
-      "Bekijk de ë-C4 X": "€ 629,",
-      "Bekijk de C4 X": "€ 679,",
-      "Bekijk de ë-C5 Aircross": "€ 699,",
-      "Bekijk de Nieuwe C5 Aircross": "€ 669,"
+      "Bekijk de AMI": "€369,",
+      "Bekijk de ë-C3": "€479,",
+      "Bekijk de Nieuwe C3": "€399,",
+      "Bekijk de ë-C3 Aircross": "€499,",
+      "Bekijk de Nieuwe C3 Aircross": "€599,",
+      "Bekijk de ë-C4": "€649,",
+      "Bekijk de C4": "€629,",
+      "Bekijk de ë-C4 X": "€679,",
+      "Bekijk de C4 X": "€699,",
+      "Bekijk de ë-C5 Aircross": "€669,",
+      "Bekijk de Nieuwe C5 Aircross": "€0,10"
     },
     "DS Automobiles": {
-      "BEKIJK DE DS 3": "€ 585,",
-      "BEKIJK DE DS 3 E-TENSE": "€ 640,",
-      "BEKIJK DE N°4 PLUG-IN HYBRID": "€ 683,",
-      "BEKIJK DE N°4 ELEKTRISCH": "€ 660,",
-      "BEKIJK DE N°8": "€ 893,"
+      "BEKIJK DE DS 3": "€640,",
+      "BEKIJK DE DS 3 E-TENSE": "€683,",
+      "BEKIJK DE N°4 PLUG-IN HYBRID": "€660,",
+      "BEKIJK DE N°4 ELEKTRISCH": "€808,",
+      "BEKIJK DE DS 7": "€893,",
+      "BEKIJK DE N°8": "€0,10"
     },
     "Opel": {
-      "Bekijk de Rocks": "€ 171,",
-      "Bekijk de Astra 5-deurs": "€ 869,",
-      "Bekijk de Astra Sports Tourer": "€ 893,"
+      "Bekijk de Rocks": "€369,",
+      "Bekijk de Corsa": "€392,",
+      "Bekijk de Corsa Electric": "€488,",
+      "Bekijk de Mokka": "€459,",
+      "Bekijk de Mokka Electric": "€535,",
+      "Bekijk de Frontera": "€422,",
+      "Bekijk de Frontera Electric": "€656,",
+      "Bekijk de Astra 5-deurs": "€683,",
+      "Bekijk de Astra Electric": "€671,",
+      "Bekijk de Astra Sports Tourer": "€714,",
+      "Bekijk de Astra Sports Tourer Electric": "€762,",
+      "Bekijk de Grandland": "€720,",
+      "Bekijk de Grandland Electric": "€0,10"
     },
     "Fiat": {
-      "BEKIJK DE 500E": "€ 503,",
-      "BEKIJK DE 600": "€ 492,-",
-      "BEKIJK DE TOPOLINO": "€ 169,"
+      "BEKIJK DE 500": "€357,",
+      "BEKIJK DE 500E": "€488,",
+      "BEKIJK DE 600": "€475,",
+      "BEKIJK DE 600E": "€492,",
+      "BEKIJK DE GRANDE PANDA": "€454,",
+      "BEKIJK DE GRANDE PANDA E": "€441,",
+      "BEKIJK DE PANDINA": "€169,",
+      "BEKIJK DE TOPOLINO": "€0,10"
     },
     "Alfa Romeo": {
-      "BEKIJK DE JUNIOR": "€ 469,",
-      "BEKIJK DE TONALE (Overig)": "€ 695,"
+      "BEKIJK DE JUNIOR": "€ 468,99,-",
+      "BEKIJK DE TONALE": "€ 694,99,-"
     },
     "Jeep": {},
     "Abarth": {
-      "BEKIJK DE 500E": "€ 585,"
+      "BEKIJK DE 500E": "€622,",
+      "BEKIJK DE 600E": "€0,10"
     },
     "Lancia": {
-      "BEKIJK DE YPSILON": "€ 509,",
-      "BEKIJK DE YPSILON MHEV": "€ 411,"
+      "BEKIJK DE YPSILON": "€411,",
+      "BEKIJK DE YPSILON MHEV": "€0,10"
     },
     "Leapmotor": {
-      "Bekijk de B10": "€ 459,"
+      "Bekijk de B10": "€0,10"
     }
   }
 }
