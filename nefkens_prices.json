@@ -1,41 +1,49 @@
 {
-  "bijgewerkt_op": "2026-05-08T07:22:31.833676",
+  "bijgewerkt_op": "2026-05-08T07:40:01.052967",
   "prijzen": {
-    "Peugeot": {},
+    "Peugeot": {
+      "e-208": "€ 419,",
+      "e-2008%20SUV": "€ 548,",
+      "e-308": "€ 604,",
+      "e-308%20SW": "€ 629,",
+      "Nieuwe%20e-3008": "€ 670,",
+      "e-408": "€ 655,",
+      "e-5008": "€ 711,"
+    },
     "Citroën": {
-      "AMI": "€ 169,,-",
-      "Nieuwe C3": "€ 479,,-",
-      "Nieuwe C3 Aircross": "€ 499,,-",
-      "C4": "€ 599,,-",
-      "C4 X": "€ 629,,-",
-      "Nieuwe C5 Aircross": "€ 688,,-"
+      "AMI": "€ 169,",
+      "Nieuwe%20C3": "€ 479,",
+      "Nieuwe%20C3%20Aircross": "€ 499,",
+      "C4": "€ 649,",
+      "C4%20X": "€ 679,"
     },
-    "DS Automobiles": {},
+    "DS Automobiles": {
+      "DS%203": "€ 585,",
+      "DS%203%20E-TENSE": "€ 640,",
+      "N%C2%B04%20Plug-in%20Hybrid": "€ 683,",
+      "N%C2%B04%20Elektrisch": "€ 660,",
+      "N%C2%B08": "€ 893,"
+    },
     "Opel": {
-      "Rocks": "€ 171,,-",
-      "Corsa": "€ 369,,-",
-      "Corsa Electric": "€ 392,,-",
-      "Mokka": "€ 488,,-",
-      "Mokka Electric": "€ 459,,-",
-      "Frontera": "€ 535,,-",
-      "Frontera Electric": "€ 422,,-",
-      "Astra 5-deurs": "€ 656,,-",
-      "Astra Electric": "€ 683,,-",
-      "Astra Sports Tourer": "€ 671,,-",
-      "Astra Sports Tourer Electric": "€ 714,,-",
-      "Grandland": "€ 762,,-",
-      "Grandland Electric": "€ 720,,-"
+      "Rocks": "€ 171,",
+      "Astra%205-deurs": "€ 869,",
+      "Astra%20Sports%20Tourer": "€ 893,"
     },
-    "Fiat": {},
+    "Fiat": {
+      "Topolino": "€ 169,"
+    },
     "Alfa Romeo": {
-      "BEKIJK DE JUNIOR (Overig)": "€ 468,99,-",
-      "BEKIJK DE TONALE (Overig)": "€ 694,99,-"
+      "Junior (Overig)": "€ 468,99,-",
+      "Tonale (Overig)": "€ 694,99,-"
     },
     "Jeep": {},
     "Abarth": {},
-    "Lancia": {},
+    "Lancia": {
+      "Ypsilon": "€ 509,",
+      "Ypsilon%20MHEV": "€ 411,"
+    },
     "Leapmotor": {
-      "B10": "€ 459,,-"
+      "B10": "€ 459,"
     }
   }
 }
