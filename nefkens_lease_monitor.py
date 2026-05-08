@@ -35,7 +35,7 @@ EMAIL_CONFIG = {
     "username":     os.environ.get("GMAIL_USERNAME", ""),
     "password":     os.environ.get("GMAIL_PASSWORD", ""),
     "from_address": os.environ.get("GMAIL_USERNAME", ""),
-    "to_addresses": ["jordie.hagen@nefkens.nl", "pauline.edens@nefkens.nl"],
+    "to_addresses": ["jordie.hagen@nefkens.nl"],
 }
 
 MERKEN = [
