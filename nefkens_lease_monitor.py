@@ -1,12 +1,12 @@
 """
 Nefkens Private Lease Monitor
-==============================
-Monitorert prijzen van private lease auto's van 10 Nederlandse merkenen.
+====================================
+Draait dagelijks via GitHub Actions.
+E-mailgegevens worden veilig opgehaald uit GitHub Secrets.
 
 LOGICA:
-- Standaard merken (8): Haal prijzen van overzichtspagina's (/modellen)
-- Configurator merken (2): Open modelpagina → configurator → stel zelf samen → (E) en (O)
-                            Of: bekijk voorraad → goedkoopste (E) en (O)
+- 8 Standaard merken: Haal prijzen DIRECT van /modellen overzichtspagina
+- 2 Configurator merken (Alfa Romeo, Jeep): Open modelpagina → configurator
 """
 
 import json
@@ -14,49 +14,48 @@ import os
 import smtplib
 import logging
 import re
-import time
 from pathlib import Path
 from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from collections import defaultdict
-from typing import Dict, List, Optional
+import time
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
 
 # ─────────────────────────────────────────────
-# CONFIG
+# CONFIGURATIE
 # ─────────────────────────────────────────────
 
 EMAIL_CONFIG = {
-    "smtp_server": "smtp.gmail.com",
-    "smtp_port": 587,
-    "username": os.environ.get("GMAIL_USERNAME", ""),
-    "password": os.environ.get("GMAIL_PASSWORD", ""),
+    "smtp_server":  "smtp.gmail.com",
+    "smtp_port":    587,
+    "username":     os.environ.get("GMAIL_USERNAME", ""),
+    "password":     os.environ.get("GMAIL_PASSWORD", ""),
     "from_address": os.environ.get("GMAIL_USERNAME", ""),
     "to_addresses": ["jordie.hagen@nefkens.nl", "pauline.edens@nefkens.nl"],
 }
 
-MERKEN_STANDAARD = [
-    {"naam": "Peugeot", "url": "https://privatelease.peugeot.nl/modellen"},
-    {"naam": "Citroën", "url": "https://privatelease.citroen.nl/modellen"},
+MERKEN = [
+    {"naam": "Peugeot",        "url": "https://privatelease.peugeot.nl/modellen"},
+    {"naam": "Citroën",        "url": "https://privatelease.citroen.nl/modellen"},
     {"naam": "DS Automobiles", "url": "https://privatelease.dsautomobiles.nl/modellen"},
-    {"naam": "Opel", "url": "https://privatelease.opel.nl/modellen"},
-    {"naam": "Fiat", "url": "https://privatelease.fiat.nl/modellen"},
-    {"naam": "Abarth", "url": "https://privatelease.abarth.nl/modellen"},
-    {"naam": "Lancia", "url": "https://privatelease.lancia.nl/modellen"},
-    {"naam": "Leapmotor", "url": "https://privatelease.leapmotor.nl/modellen"},
+    {"naam": "Opel",           "url": "https://privatelease.opel.nl/modellen"},
+    {"naam": "Fiat",           "url": "https://privatelease.fiat.nl/modellen"},
+    {"naam": "Alfa Romeo",     "url": "https://privatelease.alfaromeo.nl/modellen"},
+    {"naam": "Jeep",           "url": "https://privatelease.jeep.nl/modellen"},
+    {"naam": "Abarth",         "url": "https://privatelease.abarth.nl/modellen"},
+    {"naam": "Lancia",         "url": "https://privatelease.lancia.nl/modellen"},
+    {"naam": "Leapmotor",      "url": "https://privatelease.leapmotor.nl/modellen"},
 ]
 
-MERKEN_CONFIGURATOR = [
-    {"naam": "Alfa Romeo", "url": "https://privatelease.alfaromeo.nl/modellen"},
-    {"naam": "Jeep", "url": "https://privatelease.jeep.nl/modellen"},
-]
+# Merken waarbij we via de configurator onderscheid maken tussen elektrisch en overig
+CONFIGURATOR_MERKEN = ["Alfa Romeo", "Jeep"]
 
 DATA_FILE = Path("nefkens_prices.json")
-LOG_FILE = Path("nefkens_monitor.log")
+LOG_FILE  = Path("nefkens_monitor.log")
 
 # ─────────────────────────────────────────────
 # LOGGING
@@ -64,7 +63,7 @@ LOG_FILE = Path("nefkens_monitor.log")
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s  %(levelname)-10s  %(message)s",
+    format="%(asctime)s  %(levelname)s  %(message)s",
     handlers=[
         logging.FileHandler(LOG_FILE, encoding="utf-8"),
         logging.StreamHandler(),
@@ -82,457 +81,330 @@ def get_driver():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--window-size=1920,1080")
-    options.add_argument("--disable-gpu")
     options.binary_location = "/usr/bin/chromium-browser"
     service = Service("/usr/bin/chromedriver")
     return webdriver.Chrome(service=service, options=options)
 
 # ─────────────────────────────────────────────
-# HELPERS
+# SCRAPER: CONFIGURATOR
 # ─────────────────────────────────────────────
 
-def clean_model_name(text: str) -> str:
-    """Cleanup model naam."""
-    if not text:
-        return ""
-    text = text.strip()
-    text = text.replace("%20", " ").replace("%2F", "/")
-    text = " ".join(text.split())
-    return text
-
-def extract_price(text: str) -> Optional[str]:
-    """Extract prijs uit tekst. Retourneert €XXX,- of None."""
-    if not text:
-        return None
-    # Zoek getal 200-999 (redelijke lease prijs)
-    match = re.search(r'\b([2-9]\d{2})\b', str(text))
-    if match:
-        getal = int(match.group(1))
-        if 200 <= getal <= 999:
-            return f"€ {getal},-"
-    return None
-
-# ─────────────────────────────────────────────
-# STANDAARD MERKEN: OVERZICHTSPAGINA
-# ─────────────────────────────────────────────
-
-def scrape_standaard(driver: webdriver.Chrome, merk_info: dict) -> Dict[str, str]:
+def scrape_configurator_prijzen(driver, model_naam, configurator_url):
     """
-    Standaard merken: Haal modelnamen + prijzen DIRECT van overzichtspagina.
-    Niet van modelpagina's!
-    
-    Strategie:
-    1. Laad /modellen pagina (overzicht)
-    2. Parse page_text voor modelnamen
-    3. Per modelnaam: zoek volgende prijs in snippet
+    Bezoekt de configurator van een model en haalt zowel de elektrische
+    als de niet-elektrische vanafprijs op.
     """
-    merk_naam = merk_info["naam"]
-    base_url = merk_info["url"]
     prijzen = {}
-    
-    log.info("SCRAPEN: %s (overzicht)", merk_naam)
-    
+
+    def haal_huidige_prijs():
+        """Lees de prominente prijs uit de pagina."""
+        try:
+            for selector in [
+                "[class*='price']", "[class*='Price']",
+                "[class*='amount']", "[class*='maand']",
+                "[class*='tarief']",
+            ]:
+                els = driver.find_elements(By.CSS_SELECTOR, selector)
+                for el in els:
+                    tekst = el.text.strip()
+                    match = re.search(r'€\s*([\d.,]+)', tekst)
+                    if match:
+                        return match.group(1)
+            tekst = driver.find_element(By.TAG_NAME, "body").text
+            match = re.search(r'€\s*([\d.,]+)', tekst)
+            if match:
+                return match.group(1)
+        except Exception:
+            pass
+        return None
+
     try:
-        driver.get(base_url)
-        time.sleep(4)
-        
+        driver.get(configurator_url)
+        time.sleep(8)
+
+        log.info("    -> Configurator geladen: %s", configurator_url)
+
+        prijs_overig = haal_huidige_prijs()
+        if prijs_overig:
+            prijzen["Overig"] = f"€ {prijs_overig},-"
+            log.info("    -> %s Overig: € %s,-", model_naam, prijs_overig)
+
+        # Klik op de "Elektrisch" tab
+        elektrisch_geklikt = False
+        for zoekterm in ["Elektrisch", "Electric", "BEV", "Elettrica"]:
+            try:
+                elementen = driver.find_elements(By.XPATH,
+                    f"//*[normalize-space(text())='{zoekterm}' or contains(text(),'{zoekterm}')]"
+                )
+                log.info("    -> Zoekterm '%s': %d elementen gevonden", zoekterm, len(elementen))
+                
+                for el in elementen:
+                    if el.tag_name.lower() in ["button", "label", "span", "div", "li", "a"]:
+                        href = el.get_attribute("href") or ""
+                        if "elektrisch-rijden" in href or "hybride-rijden" in href:
+                            continue
+                        log.info("    -> Klikken op '%s' element", zoekterm)
+                        driver.execute_script("arguments[0].click();", el)
+                        time.sleep(5)
+                        elektrisch_geklikt = True
+                        break
+                if elektrisch_geklikt:
+                    break
+            except Exception as e:
+                log.warning("    -> Fout bij '%s': %s", zoekterm, e)
+
+        if elektrisch_geklikt:
+            prijs_elektrisch = None
+            for _ in range(5):
+                nieuwe_prijs = haal_huidige_prijs()
+                if nieuwe_prijs and nieuwe_prijs != prijs_overig:
+                    prijs_elektrisch = nieuwe_prijs
+                    break
+                time.sleep(2)
+
+            if prijs_elektrisch:
+                prijzen["Elektrisch"] = f"€ {prijs_elektrisch},-"
+                log.info("    -> %s Elektrisch: € %s,-", model_naam, prijs_elektrisch)
+
+    except Exception as e:
+        log.error("    -> Fout bij configurator %s: %s", model_naam, e)
+
+    return prijzen
+
+# ─────────────────────────────────────────────
+# SCRAPER: MERK
+# ─────────────────────────────────────────────
+
+def scrape_merk(driver, merk):
+    log.info("Scrapen: %s", merk["naam"])
+    prijzen = {}
+
+    try:
+        driver.get(merk["url"])
+        time.sleep(5)
+
         page_text = driver.find_element(By.TAG_NAME, "body").text
         
-        # SLEUTEL: Haal modelnamen DIRECT van overzichtspagina tekst
-        # Patronen:
-        # - "Bekijk de [MODEL]"
-        # - "[MODEL] €999"
-        # - Links naar modellen die NIET naar configurator gaan
-        
-        model_names = []
-        
-        # Patroon 1: "Bekijk de MODEL" of "Kijk de MODEL"
-        bekijk_pattern = r'[Bb]ekijk de (.+?)(?:\s*€|\n)'
-        for match in re.finditer(bekijk_pattern, page_text):
-            name = clean_model_name(match.group(1))
-            if name and name not in model_names and len(name) > 2:
-                model_names.append(name)
-        
-        # Patroon 2: Modellinks zonder configurator
-        try:
-            model_links = driver.find_elements(By.CSS_SELECTOR, "a[href*='/modellen/']")
-            for link in model_links:
-                href = link.get_attribute("href") or ""
-                # Skip configurator links (deze zijn voor Alfa/Jeep)
-                if "/configurator/" in href:
+        # STANDAARD MERKEN: Haal prijzen DIRECT van overzichtspagina
+        if merk["naam"] not in CONFIGURATOR_MERKEN:
+            log.info("  -> Haal prijzen van overzicht")
+            
+            # Patroon: "Bekijk de [MODELNAAM]" gevolgd door prijs
+            for match in re.finditer(r'[Bb]ekijk de ([A-Za-z0-9\s\-€%]+?)(?:\s*€|\n)', page_text):
+                model_naam = match.group(1).strip()
+                model_naam = model_naam.replace('%20', ' ').replace('%2F', '/')
+                model_naam = ' '.join(model_naam.split())
+                
+                if len(model_naam) < 2:
                     continue
                 
-                text = link.text.strip()
-                if text:
-                    text = clean_model_name(text)
-                    if text and text not in model_names and len(text) > 2:
-                        model_names.append(text)
-        except:
-            pass
-        
-        log.info("  → %d modelnamen gevonden", len(model_names))
-        
-        # Per modelnaam: zoek prijs in overzicht
-        for model_naam in model_names:
-            try:
-                # Vind model naam in pagina (case insensitive)
+                # Vind de prijs in de overzicht-snippet
                 idx = page_text.upper().find(model_naam.upper())
-                if idx < 0:
-                    log.debug("  - %s: niet in pagina gevonden", model_naam)
-                    continue
-                
-                # Snippet: 300 chars na model naam (genoeg voor prijs)
-                snippet = page_text[idx:idx+300]
-                
-                # Extract prijs (200-999 range ONLY)
-                prijs = extract_price(snippet)
-                
-                if prijs:
-                    prijzen[model_naam] = prijs
-                    log.info("  ✓ %s: %s", model_naam, prijs)
-                else:
-                    log.warning("  ✗ %s: geen prijs", model_naam)
+                if idx >= 0:
+                    snippet = page_text[idx:idx+300]
+                    prijs_match = re.search(r'€\s*([\d.,]+)', snippet)
+                    if prijs_match:
+                        prijs = f"€ {prijs_match.group(1)},-"
+                        prijzen[model_naam] = prijs
+                        log.info("  -> %s: %s", model_naam, prijs)
+        
+        # CONFIGURATOR MERKEN: Open modelpagina → configurator
+        else:
+            log.info("  -> Configurator merk, open modelpagina's")
             
-            except Exception as e:
-                log.debug("  Fout %s: %s", model_naam, e)
-        
-    except Exception as e:
-        log.error("Fout %s: %s", merk_naam, e)
-    
-    log.info("  → %d modellen opgeslagen\n", len(prijzen))
-    return prijzen
-
-# ─────────────────────────────────────────────
-# CONFIGURATOR MERKEN: MODELPAGINA
-# ─────────────────────────────────────────────
-
-def scrape_configurator(driver: webdriver.Chrome, merk_info: dict) -> Dict[str, str]:
-    """
-    Alfa Romeo & Jeep: Open modelpagina → zoek configurator of bekijk voorraad.
-    
-    Stap 1: Probeer "Stel zelf samen" button
-    Stap 2: Fallback: "Bekijk voorraad" button
-    """
-    merk_naam = merk_info["naam"]
-    base_url = merk_info["url"]
-    prijzen = {}
-    
-    log.info("SCRAPEN: %s (configurator)", merk_naam)
-    
-    try:
-        driver.get(base_url)
-        time.sleep(4)
-        
-        # Vind modellen
-        model_links = driver.find_elements(By.CSS_SELECTOR, "a[href*='/modellen/']")
-        model_names = []
-        model_urls = {}
-        
-        for link in model_links:
-            href = link.get_attribute("href") or ""
-            if "/modellen/" not in href or "/configurator/" in href:
-                continue
+            links = driver.find_elements(By.CSS_SELECTOR, "a[href*='/modellen/']")
+            model_urls = {}
             
-            text = link.text.strip()
-            if text:
-                text = clean_model_name(text)
-                if text not in model_names:
-                    model_names.append(text)
-                    model_urls[text] = href
-        
-        log.info("  Gevonden %d modellen", len(model_names))
-        
-        # Per model
-        for model_naam, model_url in model_urls.items():
-            try:
-                driver.get(model_url)
-                time.sleep(3)
-                
-                page_text = driver.find_element(By.TAG_NAME, "body").text
-                
-                # Stap 1: Zoek "Stel zelf samen" button
-                prijs_elektrisch = None
-                prijs_overig = None
-                
+            for link in links:
+                href = link.get_attribute("href") or ""
+                if "/configurator/" not in href:
+                    model_name = link.text.strip()
+                    if model_name:
+                        model_urls[model_name] = href
+            
+            log.info("  -> %d modelpagina's gevonden", len(model_urls))
+            
+            for model_naam, model_url in model_urls.items():
                 try:
-                    config_buttons = driver.find_elements(
-                        By.XPATH,
-                        "//a[contains(., 'Stel zelf samen')] | //button[contains(., 'Stel zelf samen')]"
-                    )
+                    driver.get(model_url)
+                    time.sleep(4)
                     
-                    if config_buttons:
-                        log.info("  → %s: Found 'Stel zelf samen'", model_naam)
-                        prijs_elektrisch, prijs_overig = _scrape_stel_zelf_samen(driver, model_url)
+                    # Zoek configurator link
+                    links = driver.find_elements(By.CSS_SELECTOR, "a[href*='configurator']")
+                    if links:
+                        configurator_url = links[0].get_attribute("href")
+                        if not configurator_url.startswith("http"):
+                            base = merk["url"].split("/modellen")[0]
+                            configurator_url = base + configurator_url
+                        
+                        prijzen_config = scrape_configurator_prijzen(driver, model_naam, configurator_url)
+                        for key, prijs in prijzen_config.items():
+                            if key == "Elektrisch":
+                                prijzen[f"{model_naam} (Elektrisch)"] = prijs
+                            elif key == "Overig":
+                                prijzen[f"{model_naam} (Overig)"] = prijs
+                
                 except Exception as e:
-                    log.debug("  → Geen 'Stel zelf samen': %s", e)
+                    log.error("  -> Fout bij modelpagina %s: %s", model_naam, e)
                 
-                # Stap 2: Fallback naar "Bekijk voorraad"
-                if not prijs_overig:
-                    try:
-                        voorraad_buttons = driver.find_elements(
-                            By.XPATH,
-                            "//a[contains(., 'Bekijk voorraad')] | //button[contains(., 'Bekijk voorraad')]"
-                        )
-                        
-                        if voorraad_buttons:
-                            log.info("  → %s: Fallback 'Bekijk voorraad'", model_naam)
-                            prijs_elektrisch, prijs_overig = _scrape_bekijk_voorraad(driver, voorraad_buttons[0])
-                    except Exception as e:
-                        log.debug("  → Geen 'Bekijk voorraad': %s", e)
-                
-                # Sla op
-                if prijs_overig:
-                    if prijs_elektrisch:
-                        prijzen[f"{model_naam} (Elektrisch)"] = prijs_elektrisch
-                        prijzen[f"{model_naam} (Overig)"] = prijs_overig
-                        log.info("  ✓ %s (Elektrisch): %s", model_naam, prijs_elektrisch)
-                        log.info("  ✓ %s (Overig): %s", model_naam, prijs_overig)
-                    else:
-                        prijzen[model_naam] = prijs_overig
-                        log.info("  ✓ %s: %s", model_naam, prijs_overig)
-                else:
-                    log.warning("  ✗ %s: geen prijzen gevonden", model_naam)
-            
-            except Exception as e:
-                log.error("  ✗ Fout %s: %s", model_naam, e)
-            
-            time.sleep(1)
-    
+                time.sleep(2)
+
     except Exception as e:
-        log.error("Fout %s: %s", merk_naam, e)
-    
-    log.info("  → %d prijsregels\n", len(prijzen))
+        log.error("  -> Fout bij %s: %s", merk["naam"], e)
+
+    log.info("  -> Totaal %d modellen met prijs", len(prijzen))
     return prijzen
-
-def _scrape_stel_zelf_samen(driver: webdriver.Chrome, config_url: str) -> tuple:
-    """
-    Open 'Stel zelf samen' configurator.
-    Haal Overig prijs en probeer Elektrisch tab.
-    """
-    prijs_elektrisch = None
-    prijs_overig = None
-    
-    try:
-        # Open configurator
-        driver.get(config_url)
-        time.sleep(5)
-        
-        config_text = driver.find_element(By.TAG_NAME, "body").text
-        
-        # Haal Overig prijs
-        prijs_overig = extract_price(config_text)
-        
-        if prijs_overig:
-            log.info("      ✓ Overig: %s", prijs_overig)
-        
-        # Probeer Elektrisch tab
-        for term in ["Elektrisch", "Electric", "BEV", "E-"]:
-            try:
-                els = driver.find_elements(By.XPATH, f"//*[contains(normalize-space(), '{term}')]")
-                
-                for el in els:
-                    if el.is_displayed():
-                        driver.execute_script("arguments[0].click();", el)
-                        time.sleep(4)
-                        
-                        config_text = driver.find_element(By.TAG_NAME, "body").text
-                        prijs_e = extract_price(config_text)
-                        
-                        if prijs_e and prijs_e != prijs_overig:
-                            prijs_elektrisch = prijs_e
-                            log.info("      ✓ Elektrisch: %s", prijs_elektrisch)
-                            break
-            
-            except Exception as e:
-                log.debug("      → Term '%s' error: %s", term, e)
-            
-            if prijs_elektrisch:
-                break
-    
-    except Exception as e:
-        log.error("      Fout stel zelf samen: %s", e)
-    
-    return prijs_elektrisch, prijs_overig
-
-def _scrape_bekijk_voorraad(driver: webdriver.Chrome, button) -> tuple:
-    """
-    Open 'Bekijk voorraad' en haal goedkoopste Elektrisch + Overig.
-    """
-    prijs_elektrisch = None
-    prijs_overig = None
-    
-    try:
-        driver.execute_script("arguments[0].click();", button)
-        time.sleep(5)
-        
-        voorraad_text = driver.find_element(By.TAG_NAME, "body").text
-        
-        # Zoek alle prijzen (200-999)
-        prijzen = []
-        for match in re.finditer(r'\b([2-9]\d{2})\b', voorraad_text):
-            getal = int(match.group(1))
-            if 200 <= getal <= 999:
-                prijzen.append(getal)
-        
-        if prijzen:
-            # Goedkoopste is eerste (of minimum)
-            goedkoopste = min(prijzen)
-            prijs_overig = f"€ {goedkoopste},-"
-            log.info("      ✓ Overig (goedkoopste): %s", prijs_overig)
-            
-            # Check of Elektrisch anders is
-            if len(prijzen) > 1 and prijzen[-1] != goedkoopste:
-                prijs_elektrisch = f"€ {prijzen[-1]},-"
-                log.info("      ✓ Elektrisch: %s", prijs_elektrisch)
-    
-    except Exception as e:
-        log.error("      Fout bekijk voorraad: %s", e)
-    
-    return prijs_elektrisch, prijs_overig
 
 # ─────────────────────────────────────────────
 # OPSLAG & VERGELIJKING
 # ─────────────────────────────────────────────
 
-def laad_opgeslagen() -> Dict[str, Dict[str, str]]:
-    """Laad opgeslagen prijzen."""
+def laad_opgeslagen():
     if DATA_FILE.exists():
-        try:
-            data = json.loads(DATA_FILE.read_text(encoding="utf-8"))
-            return data.get("prijzen", {})
-        except Exception as e:
-            log.error("Fout laden JSON: %s", e)
+        data = json.loads(DATA_FILE.read_text(encoding="utf-8"))
+        return data.get("prijzen", {})
     return {}
 
-def sla_op(alle_prijzen: Dict[str, Dict[str, str]]) -> None:
-    """Sla prijzen op."""
-    data = {
-        "bijgewerkt_op": datetime.now().isoformat(),
-        "prijzen": alle_prijzen,
-    }
-    DATA_FILE.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+def sla_op(alle_prijzen):
+    DATA_FILE.write_text(
+        json.dumps({"bijgewerkt_op": datetime.now().isoformat(), "prijzen": alle_prijzen},
+                   ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
 
-def vergelijk(oud: Dict[str, Dict[str, str]], nieuw: Dict[str, Dict[str, str]]) -> List[dict]:
-    """Vergelijk prijzen."""
+def vergelijk(oud, nieuw):
     wijzigingen = []
-    
     for merk, modellen in nieuw.items():
         oud_merk = oud.get(merk, {})
-        
         for model, prijs in modellen.items():
             if model not in oud_merk:
-                wijzigingen.append({"merk": merk, "model": model, "type": "Nieuw", "oud": "—", "nieuw": prijs})
+                wijzigingen.append({"merk": merk, "model": model, "type": "Nieuw",      "oud": "—",            "nieuw": prijs})
             elif oud_merk[model] != prijs:
-                wijzigingen.append({"merk": merk, "model": model, "type": "Gewijzigd", "oud": oud_merk[model], "nieuw": prijs})
-        
+                wijzigingen.append({"merk": merk, "model": model, "type": "Gewijzigd",  "oud": oud_merk[model], "nieuw": prijs})
         for model in oud_merk:
             if model not in modellen:
                 wijzigingen.append({"merk": merk, "model": model, "type": "Verwijderd", "oud": oud_merk[model], "nieuw": "—"})
-    
     return wijzigingen
 
 # ─────────────────────────────────────────────
-# EMAIL
+# E-MAIL
 # ─────────────────────────────────────────────
 
-def bouw_email_html(wijzigingen: List[dict], alle_prijzen: Dict[str, Dict[str, str]]) -> str:
-    """Bouwt HTML email."""
+def bouw_email_html(wijzigingen, alle_prijzen):
     datum = datetime.now().strftime("%d-%m-%Y %H:%M")
     n = len(wijzigingen)
-    
-    per_merk = defaultdict(list)
-    for w in wijzigingen:
-        per_merk[w["merk"]].append(w)
-    
-    secties = ""
-    for merk in sorted(per_merk.keys()):
-        rijen = ""
-        for w in per_merk[merk]:
-            type_info = {
-                "Nieuw": ("🟢", "#d4edda"),
-                "Gewijzigd": ("🟡", "#fff3cd"),
-                "Verwijderd": ("🔴", "#f8d7da"),
-            }
-            icoon, kleur = type_info[w["type"]]
-            rijen += f'<tr style="background:{kleur}"><td style="padding:8px">{w["model"]}</td><td style="padding:8px">{icoon} {w["type"]}</td><td style="padding:8px">{w["oud"]}</td><td style="padding:8px"><strong>{w["nieuw"]}</strong></td></tr>'
-        
-        secties += f'<h3 style="margin-top:24px">{merk}</h3><table border="1" cellspacing="0" style="border-collapse:collapse;width:100%"><tr style="background:#f0f0f0"><th style="padding:8px">Model</th><th style="padding:8px">Status</th><th style="padding:8px">Oud</th><th style="padding:8px">Nieuw</th></tr>{rijen}</table>'
-    
-    html = f'<html><head><meta charset="utf-8"></head><body style="font-family:Arial;max-width:900px;margin:0 auto;padding:20px"><h1>Nefkels Monitor</h1><p>Gecontroleerd: {datum}</p><h2>Wijzigingen ({n})</h2>{secties if n > 0 else "<p>Geen wijzigingen.</p>"}</body></html>'
-    return html
 
-def stuur_email(wijzigingen: List[dict], alle_prijzen: Dict[str, Dict[str, str]]) -> None:
-    """Stuurt email."""
-    if not wijzigingen:
-        log.info("Geen wijzigingen - email niet verstuurd")
-        return
-    
-    cfg = EMAIL_CONFIG
-    n = len(wijzigingen)
-    subject = f"[Nefkels] {n} wijziging{'en' if n != 1 else ''}"
-    html = bouw_email_html(wijzigingen, alle_prijzen)
-    
+    per_merk = {}
+    for w in wijzigingen:
+        per_merk.setdefault(w["merk"], []).append(w)
+
+    secties = ""
+    for merk, items in per_merk.items():
+        rijen = ""
+        for w in items:
+            kleur = {"Nieuw": "#d4edda", "Gewijzigd": "#fff3cd", "Verwijderd": "#f8d7da"}[w["type"]]
+            icoon = {"Nieuw": "🟢", "Gewijzigd": "🟡", "Verwijderd": "🔴"}[w["type"]]
+            rijen += f"""<tr style="background:{kleur}">
+                <td style="padding:8px">{w['model']}</td>
+                <td style="padding:8px">{icoon} {w['type']}</td>
+                <td style="padding:8px">{w['oud']}</td>
+                <td style="padding:8px"><strong>{w['nieuw']}</strong></td>
+            </tr>"""
+        secties += f"""
+            <h3 style="margin-top:24px;border-bottom:2px solid #eee;padding-bottom:4px">{merk}</h3>
+            <table border="1" cellspacing="0" style="border-collapse:collapse;width:100%;margin-bottom:16px">
+                <tr style="background:#f0f0f0">
+                    <th style="padding:8px;text-align:left">Model</th>
+                    <th style="padding:8px;text-align:left">Status</th>
+                    <th style="padding:8px;text-align:left">Oude prijs</th>
+                    <th style="padding:8px;text-align:left">Nieuwe prijs</th>
+                </tr>{rijen}
+            </table>"""
+
+    overzicht = ""
+    for merk, modellen in sorted(alle_prijzen.items()):
+        if not modellen:
+            continue
+        rijen = "".join(
+            f'<tr><td style="padding:6px">{m}</td><td style="padding:6px">{p}</td></tr>'
+            for m, p in sorted(modellen.items())
+        )
+        overzicht += f"""
+            <h3 style="margin-top:20px">{merk}</h3>
+            <table border="1" cellspacing="0" style="border-collapse:collapse;margin-bottom:12px">
+                <tr style="background:#f0f0f0">
+                    <th style="padding:6px;text-align:left">Model</th>
+                    <th style="padding:6px;text-align:left">Vanafprijs/mnd</th>
+                </tr>{rijen}
+            </table>"""
+
+    wijzigingen_blok = f"""
+        <h2>Wijzigingen ({n})</h2>
+        {secties if n > 0 else '<p style="color:#666">Geen wijzigingen t.o.v. de vorige meting.</p>'}
+    """
+
+    return f"""<html><body style="font-family:Arial,sans-serif;color:#333;max-width:800px">
+        <h2 style="color:#1B4F8A">Nefkens Private Lease Monitor</h2>
+        <p>Gecontroleerd op: <strong>{datum}</strong></p>
+        {wijzigingen_blok}
+        <h2 style="margin-top:40px">Volledig actueel overzicht</h2>
+        {overzicht}
+        <p style="color:#aaa;font-size:11px;margin-top:40px;border-top:1px solid #eee;padding-top:12px">
+            Automatisch bericht · Nefkens Private Lease Monitor · GitHub Actions · {datum}
+        </p>
+    </body></html>"""
+
+def stuur_email(wijzigingen, alle_prijzen):
+    cfg    = EMAIL_CONFIG
+    datum  = datetime.now().strftime("%d-%m-%Y")
+    n      = len(wijzigingen)
+    subject = f"[Nefkens Private Lease Monitor] {n} wijziging{'en' if n != 1 else ''} - {datum}"
+
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
-    msg["From"] = cfg["from_address"]
-    msg["To"] = ", ".join(cfg["to_addresses"])
-    msg.attach(MIMEText(html, "html", "utf-8"))
-    
-    try:
-        with smtplib.SMTP(cfg["smtp_server"], cfg["smtp_port"]) as server:
-            server.starttls()
-            server.login(cfg["username"], cfg["password"])
-            server.sendmail(cfg["from_address"], cfg["to_addresses"], msg.as_string())
-        log.info("✓ Email verstuurd")
-    except Exception as e:
-        log.error("Email error: %s", e)
+    msg["From"]    = cfg["from_address"]
+    msg["To"]      = ", ".join(cfg["to_addresses"])
+    msg.attach(MIMEText(bouw_email_html(wijzigingen, alle_prijzen), "html", "utf-8"))
+
+    with smtplib.SMTP(cfg["smtp_server"], cfg["smtp_port"]) as server:
+        server.starttls()
+        server.login(cfg["username"], cfg["password"])
+        server.sendmail(cfg["from_address"], cfg["to_addresses"], msg.as_string())
+    log.info("E-mail verstuurd")
 
 # ─────────────────────────────────────────────
-# MAIN
+# HOOFDPROGRAMMA
 # ─────────────────────────────────────────────
 
 def main():
-    log.info("=" * 70)
-    log.info("Monitor gestart")
-    log.info("=" * 70)
-    
-    oude_prijzen = laad_opgeslagen()
+    log.info("=" * 60)
+    log.info("Nefkens Private Lease Monitor gestart - %s", datetime.now().strftime("%d-%m-%Y %H:%M"))
+    log.info("=" * 60)
+
+    oude_prijzen   = laad_opgeslagen()
     nieuwe_prijzen = {}
-    
+
     driver = get_driver()
     try:
-        # Standaard merken
-        for merk_info in MERKEN_STANDAARD:
-            try:
-                nieuwe_prijzen[merk_info["naam"]] = scrape_standaard(driver, merk_info)
-                time.sleep(2)
-            except Exception as e:
-                log.error("Fout %s: %s", merk_info["naam"], e)
-                nieuwe_prijzen[merk_info["naam"]] = {}
-        
-        # Configurator merken
-        for merk_info in MERKEN_CONFIGURATOR:
-            try:
-                nieuwe_prijzen[merk_info["naam"]] = scrape_configurator(driver, merk_info)
-                time.sleep(2)
-            except Exception as e:
-                log.error("Fout %s: %s", merk_info["naam"], e)
-                nieuwe_prijzen[merk_info["naam"]] = {}
-    
+        for merk in MERKEN:
+            nieuwe_prijzen[merk["naam"]] = scrape_merk(driver, merk)
+            time.sleep(2)
     finally:
         driver.quit()
-    
-    # Vergelijk en sla op
+
     wijzigingen = vergelijk(oude_prijzen, nieuwe_prijzen)
     sla_op(nieuwe_prijzen)
-    
+
     totaal = sum(len(m) for m in nieuwe_prijzen.values())
-    log.info("\n" + "=" * 70)
-    log.info("Totaal: %d modellen, %d wijzigingen", totaal, len(wijzigingen))
-    log.info("=" * 70)
-    
-    stuur_email(wijzigingen, nieuwe_prijzen)
-    log.info("Klaar!\n")
+    log.info("Totaal: %d modellen over %d merken", totaal, len(MERKEN))
+
+    if wijzigingen:
+        log.info("%d wijziging(en) - e-mail wordt verstuurd", len(wijzigingen))
+        stuur_email(wijzigingen, nieuwe_prijzen)
+    else:
+        log.info("Geen wijzigingen - geen e-mail verstuurd")
+
+    log.info("Klaar.\n")
 
 if __name__ == "__main__":
     main()
