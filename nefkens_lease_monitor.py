@@ -120,6 +120,11 @@ def scrape_standaard(driver: webdriver.Chrome, merk_info: dict) -> Dict[str, str
     """
     Standaard merken: Haal modelnamen + prijzen DIRECT van overzichtspagina.
     Niet van modelpagina's!
+    
+    Strategie:
+    1. Laad /modellen pagina (overzicht)
+    2. Parse page_text voor modelnamen
+    3. Per modelnaam: zoek volgende prijs in snippet
     """
     merk_naam = merk_info["naam"]
     base_url = merk_info["url"]
@@ -133,36 +138,53 @@ def scrape_standaard(driver: webdriver.Chrome, merk_info: dict) -> Dict[str, str
         
         page_text = driver.find_element(By.TAG_NAME, "body").text
         
-        # Vind alle modellinks
-        model_links = driver.find_elements(By.CSS_SELECTOR, "a[href*='/modellen/']")
+        # SLEUTEL: Haal modelnamen DIRECT van overzichtspagina tekst
+        # Patronen:
+        # - "Bekijk de [MODEL]"
+        # - "[MODEL] €999"
+        # - Links naar modellen die NIET naar configurator gaan
+        
         model_names = []
         
-        for link in model_links:
-            href = link.get_attribute("href") or ""
-            # Skip configurator links
-            if "/configurator/" in href:
-                continue
-            
-            text = link.text.strip()
-            if text:
-                text = clean_model_name(text)
-                if text and text not in model_names:
-                    model_names.append(text)
+        # Patroon 1: "Bekijk de MODEL" of "Kijk de MODEL"
+        bekijk_pattern = r'[Bb]ekijk de (.+?)(?:\s*€|\n)'
+        for match in re.finditer(bekijk_pattern, page_text):
+            name = clean_model_name(match.group(1))
+            if name and name not in model_names and len(name) > 2:
+                model_names.append(name)
         
-        log.info("  Gevonden %d modellen", len(model_names))
-        
-        # Per model: zoek prijs in overzicht
-        for model_naam in model_names:
-            try:
-                # Vind model in pagina en zoek volgende prijs
-                idx = page_text.upper().find(model_naam.upper())
-                if idx < 0:
+        # Patroon 2: Modellinks zonder configurator
+        try:
+            model_links = driver.find_elements(By.CSS_SELECTOR, "a[href*='/modellen/']")
+            for link in model_links:
+                href = link.get_attribute("href") or ""
+                # Skip configurator links (deze zijn voor Alfa/Jeep)
+                if "/configurator/" in href:
                     continue
                 
-                # Snippet van 200 chars na model naam
-                snippet = page_text[idx:idx+200]
+                text = link.text.strip()
+                if text:
+                    text = clean_model_name(text)
+                    if text and text not in model_names and len(text) > 2:
+                        model_names.append(text)
+        except:
+            pass
+        
+        log.info("  → %d modelnamen gevonden", len(model_names))
+        
+        # Per modelnaam: zoek prijs in overzicht
+        for model_naam in model_names:
+            try:
+                # Vind model naam in pagina (case insensitive)
+                idx = page_text.upper().find(model_naam.upper())
+                if idx < 0:
+                    log.debug("  - %s: niet in pagina gevonden", model_naam)
+                    continue
                 
-                # Extract prijs
+                # Snippet: 300 chars na model naam (genoeg voor prijs)
+                snippet = page_text[idx:idx+300]
+                
+                # Extract prijs (200-999 range ONLY)
                 prijs = extract_price(snippet)
                 
                 if prijs:
@@ -172,7 +194,7 @@ def scrape_standaard(driver: webdriver.Chrome, merk_info: dict) -> Dict[str, str
                     log.warning("  ✗ %s: geen prijs", model_naam)
             
             except Exception as e:
-                log.error("  ✗ Fout %s: %s", model_naam, e)
+                log.debug("  Fout %s: %s", model_naam, e)
         
     except Exception as e:
         log.error("Fout %s: %s", merk_naam, e)
