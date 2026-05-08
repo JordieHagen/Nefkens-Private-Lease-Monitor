@@ -1,110 +1,41 @@
 {
-  "bijgewerkt_op": "2026-05-08T07:08:03.971777",
+  "bijgewerkt_op": "2026-05-08T07:22:31.833676",
   "prijzen": {
-    "Peugeot": {
-      "BEKIJK DE E-208": "€ 208,-",
-      "BEKIJK DE 208": "€ 208,-",
-      "BEKIJK DE E-2008 SUV": "€ 522,-",
-      "BEKIJK DE 2008 SUV": "€ 308,-",
-      "BEKIJK DE E-308": "€ 308,-",
-      "BEKIJK DE 308": "€ 308,-",
-      "BEKIJK DE E-308 SW": "€ 308,-",
-      "BEKIJK DE 308 SW": "€ 308,-",
-      "BEKIJK DE 3008": "€ 670,-",
-      "BEKIJK DE NIEUWE E-3008": "€ 408,-",
-      "BEKIJK DE E-408": "€ 408,-",
-      "BEKIJK DE 408": "€ 408,-",
-      "BEKIJK DE 5008": "€ 711,-",
-      "BEKIJK DE E-5008": "€ 450,-"
-    },
+    "Peugeot": {},
     "Citroën": {
-      "AMI": "€ 369,-",
-      "ë-C3": "€ 369,-",
-      "Nieuwe C3": "€ 479,-",
-      "ë-C3 Aircross": "€ 399,-",
-      "Nieuwe C3 Aircross": "€ 499,-",
-      "ë-C4": "€ 599,-",
-      "ë-C4 X": "€ 629,-",
-      "C4 X": "€ 629,-",
-      "ë-C5 Aircross": "€ 784,-",
-      "Nieuwe C5 Aircross": "€ 688,-",
-      "Bekijk de AMI": "€ 369,-",
-      "Bekijk de ë-C3": "€ 479,-",
-      "Bekijk de Nieuwe C3": "€ 399,-",
-      "Bekijk de ë-C3 Aircross": "€ 499,-",
-      "Bekijk de Nieuwe C3 Aircross": "€ 599,-",
-      "Bekijk de ë-C4": "€ 649,-",
-      "Bekijk de C4": "€ 629,-",
-      "Bekijk de ë-C4 X": "€ 679,-",
-      "Bekijk de C4 X": "€ 784,-",
-      "Bekijk de ë-C5 Aircross": "€ 688,-",
-      "Bekijk de Nieuwe C5 Aircross": "€ 450,-"
+      "AMI": "€ 169,,-",
+      "Nieuwe C3": "€ 479,,-",
+      "Nieuwe C3 Aircross": "€ 499,,-",
+      "C4": "€ 599,,-",
+      "C4 X": "€ 629,,-",
+      "Nieuwe C5 Aircross": "€ 688,,-"
     },
-    "DS Automobiles": {
-      "BEKIJK DE DS 3": "€ 640,-",
-      "BEKIJK DE DS 3 E-TENSE": "€ 683,-",
-      "BEKIJK DE N°4 PLUG-IN HYBRID": "€ 660,-",
-      "BEKIJK DE N°4 ELEKTRISCH": "€ 808,-",
-      "BEKIJK DE DS 7": "€ 893,-",
-      "BEKIJK DE N°8": "€ 450,-"
-    },
+    "DS Automobiles": {},
     "Opel": {
-      "Rocks": "€ 369,-",
-      "Corsa": "€ 369,-",
-      "Corsa Electric": "€ 392,-",
-      "Mokka": "€ 488,-",
-      "Mokka Electric": "€ 459,-",
-      "Frontera": "€ 535,-",
-      "Frontera Electric": "€ 422,-",
-      "Astra 5-deurs": "€ 656,-",
-      "Astra Electric": "€ 683,-",
-      "Astra Sports Tourer": "€ 671,-",
-      "Astra Sports Tourer Electric": "€ 714,-",
-      "Grandland": "€ 762,-",
-      "Grandland Electric": "€ 720,-",
-      "Bekijk de Rocks": "€ 369,-",
-      "Bekijk de Corsa": "€ 392,-",
-      "Bekijk de Corsa Electric": "€ 488,-",
-      "Bekijk de Mokka": "€ 459,-",
-      "Bekijk de Mokka Electric": "€ 535,-",
-      "Bekijk de Frontera": "€ 422,-",
-      "Bekijk de Frontera Electric": "€ 656,-",
-      "Bekijk de Astra 5-deurs": "€ 683,-",
-      "Bekijk de Astra Electric": "€ 671,-",
-      "Bekijk de Astra Sports Tourer": "€ 714,-",
-      "Bekijk de Astra Sports Tourer Electric": "€ 762,-",
-      "Bekijk de Grandland": "€ 720,-",
-      "Bekijk de Grandland Electric": "€ 450,-"
+      "Rocks": "€ 171,,-",
+      "Corsa": "€ 369,,-",
+      "Corsa Electric": "€ 392,,-",
+      "Mokka": "€ 488,,-",
+      "Mokka Electric": "€ 459,,-",
+      "Frontera": "€ 535,,-",
+      "Frontera Electric": "€ 422,,-",
+      "Astra 5-deurs": "€ 656,,-",
+      "Astra Electric": "€ 683,,-",
+      "Astra Sports Tourer": "€ 671,,-",
+      "Astra Sports Tourer Electric": "€ 714,,-",
+      "Grandland": "€ 762,,-",
+      "Grandland Electric": "€ 720,,-"
     },
-    "Fiat": {
-      "BEKIJK DE 500": "€ 500,-",
-      "BEKIJK DE 500E": "€ 600,-",
-      "BEKIJK DE 600": "€ 600,-",
-      "BEKIJK DE 600E": "€ 492,-",
-      "BEKIJK DE GRANDE PANDA": "€ 454,-",
-      "BEKIJK DE GRANDE PANDA E": "€ 441,-",
-      "BEKIJK DE PANDINA": "€ 450,-",
-      "BEKIJK DE TOPOLINO": "€ 450,-"
-    },
-    "Abarth": {
-      "BEKIJK DE 500E": "€ 622,-",
-      "BEKIJK DE 600E": "€ 450,-"
-    },
-    "Lancia": {
-      "BEKIJK DE YPSILON": "€ 411,-",
-      "BEKIJK DE YPSILON MHEV": "€ 450,-"
-    },
-    "Leapmotor": {
-      "B10": "€ 459,-",
-      "Bekijk de B10": "€ 450,-"
-    },
+    "Fiat": {},
     "Alfa Romeo": {
-      "BEKIJK DE JUNIOR": "€ 469,-",
-      "BEKIJK DE TONALE": "€ 695,-"
+      "BEKIJK DE JUNIOR (Overig)": "€ 468,99,-",
+      "BEKIJK DE TONALE (Overig)": "€ 694,99,-"
     },
-    "Jeep": {
-      "BEKIJK DE AVENGER": "€ 225,-",
-      "BEKIJK DE COMPASS": "€ 225,-"
+    "Jeep": {},
+    "Abarth": {},
+    "Lancia": {},
+    "Leapmotor": {
+      "B10": "€ 459,,-"
     }
   }
 }
