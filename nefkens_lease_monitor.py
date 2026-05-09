@@ -51,7 +51,7 @@ MERKEN = [
 CONFIGURATOR_MERKEN = {"Alfa Romeo", "Jeep"}
 
 # Eerste woorden die duiden op een elektrische aandrijving
-ELEKTRISCH_TERMEN = {"elektrisch", "electric", "bev", "ev", "e-tense"}
+ELEKTRISCH_TERMEN = {"elektrisch", "electric", "bev", "ev", "e-tense", "full electric"}
 
 DATA_FILE = Path("nefkens_prices.json")
 LOG_FILE  = Path("nefkens_monitor.log")
@@ -306,169 +306,191 @@ def vind_voorraad_link(driver):
     return None
 
 
-def vind_brandstof_opties(driver):
+def _parse_brandstof_prijzen_tekst(body_text):
     """
-    Zoekt selecteerbare motorisatie-opties in de configurator.
-    Geeft lijst van namen terug (geen elementen, om stale references te voorkomen).
+    Probeert brandstof+prijs paren uit paginatekst te lezen zonder te klikken.
+    Kijkt per regel of er een brandstof-keyword staat, zoekt dan prijs in nabije regels.
+    Werkt als de configurator alle opties met 'vanaf'-prijzen tegelijk toont.
     """
-    LABELS = [
-        "Elektrisch", "Electric", "BEV", "ELEKTRISCH",
-        "Plug-in Hybrid", "PLUG-IN HYBRID", "PHEV",
-        "Mild Hybrid", "MILD HYBRID", "MHEV",
-        "Hybride", "Hybrid",
-        "Benzine", "Petrol",
-        "Diesel",
-    ]
-    SKIP_HREF = ["elektrisch-rijden", "hybride-rijden", "diesel-rijden", "benzine-rijden"]
-    KLIKBARE_TAGS = {"button", "label", "span", "div", "li", "a", "input"}
+    ELEKTRISCH_KW = {"elektrisch", "electric", "bev", "e-tense", "full electric"}
+    OVERIG_KW     = {"mild hybrid", "mhev", "plug-in hybrid", "phev",
+                     "hybride", "hybrid", "benzine", "petrol", "diesel"}
 
-    gevonden = []
-    gevonden_namen = set()
+    prijzen = {}
+    lines = [l.strip() for l in body_text.split("\n") if l.strip()]
 
-    for label in LABELS:
-        try:
-            els = driver.find_elements(
-                By.XPATH,
-                f"//*[normalize-space(.)='{label}' or normalize-space(text())='{label}']",
-            )
-            for el in els:
-                if el.tag_name.lower() not in KLIKBARE_TAGS:
-                    continue
-                href = el.get_attribute("href") or ""
-                if any(s in href for s in SKIP_HREF):
-                    continue
-                naam = el.text.strip() or label
-                if naam and naam not in gevonden_namen:
-                    gevonden.append(naam)
-                    gevonden_namen.add(naam)
-        except Exception:
+    for i, line in enumerate(lines):
+        line_lower = line.lower()
+        is_elektrisch = any(kw in line_lower for kw in ELEKTRISCH_KW)
+        is_overig     = any(kw in line_lower for kw in OVERIG_KW) and not is_elektrisch
+        if not is_elektrisch and not is_overig:
             continue
 
-    return gevonden
+        # Zoek prijs in dezelfde en de volgende 4 regels
+        for wl in lines[i: min(len(lines), i + 5)]:
+            prijs_m = re.search(r"€\s*([\d.]+(?:,\d+)?)", wl)
+            if prijs_m and is_lease_prijs(prijs_m.group(1)):
+                prijs = normaliseer_prijs(f"€ {prijs_m.group(1)}")
+                key = "Elektrisch" if is_elektrisch else "Overig"
+                if key not in prijzen or prijs_naar_float(prijs) < prijs_naar_float(prijzen[key]):
+                    prijzen[key] = prijs
+                break
+
+    return prijzen
 
 
-def klik_brandstof_optie(driver, naam):
+def _vind_brandstof_opties_js(driver):
     """
-    Hervindt en klikt een brandstof-optie op naam.
-    Hervindt het element elke keer om stale references te vermijden.
+    Zoekt klikbare brandstof-opties via JavaScript met contains-matching.
+    Geeft lijst van dicts {'naam': str} terug.
     """
-    KLIKBARE_TAGS = {"button", "label", "span", "div", "li", "a", "input"}
-    SKIP_HREF = ["elektrisch-rijden", "hybride-rijden", "diesel-rijden", "benzine-rijden"]
+    return driver.execute_script("""
+        var KW = ['elektrisch','electric','bev','e-tense',
+                  'mild hybrid','mhev','plug-in hybrid','phev',
+                  'hybride','hybrid','benzine','petrol','diesel'];
+        var SKIP = ['elektrisch-rijden','hybride-rijden','diesel-rijden','benzine-rijden'];
+        var gevonden = [];
+        var gezien = new Set();
 
+        document.querySelectorAll(
+            'button, label, li, a, [role="button"], [role="tab"], [role="option"]'
+        ).forEach(function(el) {
+            var tekst = (el.innerText || el.textContent || '').trim();
+            if (tekst.length < 3 || tekst.length > 60) return;
+            var tekstL = tekst.toLowerCase();
+            var href = (el.getAttribute('href') || '').toLowerCase();
+            if (SKIP.some(function(s) { return href.includes(s); })) return;
+            if (KW.some(function(kw) { return tekstL.includes(kw); }) && !gezien.has(tekstL)) {
+                gezien.add(tekstL);
+                gevonden.push({naam: tekst});
+            }
+        });
+        return gevonden;
+    """)
+
+
+def _klik_optie_js(driver, naam):
+    """Klikt een optie via JavaScript met contains-matching op de volledige naam."""
     try:
-        els = driver.find_elements(
-            By.XPATH,
-            f"//*[normalize-space(.)='{naam}' or normalize-space(text())='{naam}']",
-        )
-        for el in els:
-            if el.tag_name.lower() not in KLIKBARE_TAGS:
-                continue
-            href = el.get_attribute("href") or ""
-            if any(s in href for s in SKIP_HREF):
-                continue
-            driver.execute_script("arguments[0].click();", el)
-            return True
+        geklikt = driver.execute_script("""
+            var naam = arguments[0].toLowerCase();
+            var kandidaten = document.querySelectorAll(
+                'button, label, li, a, [role="button"], [role="tab"], [role="option"]'
+            );
+            for (var i = 0; i < kandidaten.length; i++) {
+                var el = kandidaten[i];
+                var tekst = (el.innerText || el.textContent || '').trim().toLowerCase();
+                if (tekst === naam) {
+                    el.scrollIntoView({block: 'center'});
+                    el.click();
+                    return true;
+                }
+            }
+            return false;
+        """, naam.lower())
+        return bool(geklikt)
     except Exception as e:
-        log.warning("    -> Fout bij klikken op '%s': %s", naam, e)
+        log.warning("    -> Klikfout '%s': %s", naam, e)
     return False
 
 
 def scrape_configurator_prijzen(driver, model_naam, model_url):
     """
-    Volgt de 'Stel zelf samen' link van de modelpagina naar de configurator
-    en haalt per brandstoftype de vanafprijs op.
+    Haalt vanafprijzen per brandstoftype op via de configurator.
 
-    Fallback: als geen 'Stel zelf samen' gevonden → 'Bekijk voorraad' →
-    goedkoopste elektrisch en overig uit de voorraadlijst.
+    Aanpak:
+    1. Laad configurator (geconstrueerde URL of via 'Stel zelf samen' link)
+    2. Poging A: tekst-parsing — werkt als pagina alle opties+prijzen tegelijk toont
+    3. Poging B: klikken per brandstofoptie via JS contains-match
+    4. Fallback: 'Bekijk voorraad' → goedkoopste elektrisch/overig uit voorraadlijst
 
-    Geeft dict terug: {'Elektrisch': '€ 469,-', 'Overig': '€ 395,-'}
+    Geeft dict terug: {'Elektrisch': '€ 509,-', 'Overig': '€ 469,-'}
     """
     prijzen = {}
 
     try:
-        # Stap 1: modelpagina laden
+        basis_m = re.match(r"(https?://[^/]+)", model_url)
+        if not basis_m:
+            return prijzen
+        basis_url = basis_m.group(1)
+
+        # Stap 1: modelpagina laden en configurator-link zoeken
         driver.get(model_url)
         time.sleep(5)
         log.info("  -> Modelpagina: %s", model_url)
 
         configurator_url = vind_configurator_link(driver)
-
-        # Fallback: Stellantis patroon /configurator/{model}/steps
         if not configurator_url:
-            basis = re.match(r"(https?://[^/]+)", model_url)
-            if basis:
-                configurator_url = f"{basis.group(1)}/configurator/{model_naam}/steps"
-                log.info("  -> Geen configurator-link, probeer: %s", configurator_url)
-
-        # Als ook geconstrueerde URL niet werkt → probeer voorraad
-        if not configurator_url:
-            log.warning("  -> %s: geen configurator beschikbaar, probeer voorraad", model_naam)
-            voorraad_url = vind_voorraad_link(driver)
-            if voorraad_url:
-                driver.get(voorraad_url)
-                return scrape_voorraad_prijzen(driver, model_naam)
-            return prijzen
+            configurator_url = f"{basis_url}/configurator/{model_naam}/steps"
+            log.info("  -> Geconstrueerde configurator-URL: %s", configurator_url)
 
         # Stap 2: configurator laden
         driver.get(configurator_url)
         time.sleep(8)
-        log.info("  -> Configurator: %s", driver.current_url)
+        log.info("  -> Configurator geladen: %s", driver.current_url)
 
-        snippet = driver.find_element(By.TAG_NAME, "body").text[:300].replace("\n", " ")
-        log.info("  -> Snippet: %s", snippet)
+        body_text = driver.find_element(By.TAG_NAME, "body").text
+        log.info("  -> Pagina (eerste 600 tk): %s", body_text[:600].replace("\n", " | "))
 
-        begin_prijs = haal_prijs_uit_pagina(driver)
-        log.info("  -> Beginprijs: %s", begin_prijs)
+        # Poging A: tekst-parsing (geen klikken nodig)
+        prijzen = _parse_brandstof_prijzen_tekst(body_text)
+        log.info("  -> Tekst-parsing: %s", prijzen)
 
-        opties_namen = vind_brandstof_opties(driver)
-        log.info("  -> Opties: %s", opties_namen)
+        if len(prijzen) >= 1:
+            # Controleer of er meerdere brandstoftypes zijn die we missen
+            # (bijv. alleen Overig gevonden maar ook Elektrisch verwacht)
+            # Stuur door naar klikken als er opties zijn die we nog niet hebben
+            opties = _vind_brandstof_opties_js(driver)
+            log.info("  -> Klikbare opties gevonden: %s", [o["naam"] for o in opties])
 
-        if not opties_namen:
+            heeft_elektr_optie = any(
+                any(kw in o["naam"].lower() for kw in ELEKTRISCH_TERMEN)
+                for o in opties
+            )
+            if heeft_elektr_optie and "Elektrisch" not in prijzen:
+                log.info("  -> Elektrisch-optie gevonden maar geen prijs → klikken")
+            elif prijzen:
+                return prijzen  # Tekst-parsing was voldoende
+
+        # Poging B: klikken per brandstofoptie
+        opties = _vind_brandstof_opties_js(driver)
+        log.info("  -> Klikbare opties: %s", [o["naam"] for o in opties])
+
+        if not opties:
+            # Geen klikbare opties → enkelvoudig model
+            begin_prijs = haal_prijs_uit_pagina(driver)
             if begin_prijs:
-                prijzen["Overig"] = begin_prijs
-            elif not begin_prijs:
-                log.info("  -> %s: geen opties of prijs in configurator, probeer voorraad", model_naam)
-                driver.get(model_url)
-                time.sleep(4)
-                voorraad_url = vind_voorraad_link(driver)
-                if voorraad_url:
-                    driver.get(voorraad_url)
-                    return scrape_voorraad_prijzen(driver, model_naam)
-            return prijzen
+                prijzen.setdefault("Overig", begin_prijs)
+        else:
+            elektrisch_prijzen = []
+            overig_prijzen = []
 
-        # Stap 3: per optie klikken (element opnieuw zoeken = geen stale reference)
-        elektrisch_prijzen = []
-        overig_prijzen = []
+            for optie in opties:
+                opt_naam = optie["naam"]
+                geklikt = _klik_optie_js(driver, opt_naam)
+                if not geklikt:
+                    log.warning("    -> '%s': kon niet klikken", opt_naam)
+                    continue
+                time.sleep(6)
 
-        for opt_naam in opties_namen:
-            geklikt = klik_brandstof_optie(driver, opt_naam)
-            if not geklikt:
-                log.warning("    -> '%s': kon niet klikken", opt_naam)
-                continue
-            time.sleep(4)
+                prijs = haal_prijs_uit_pagina(driver)
+                snippet_na_klik = driver.find_element(By.TAG_NAME, "body").text[:300].replace("\n", " ")
+                log.info("    -> '%s' → prijs: %s | snippet: %s", opt_naam, prijs, snippet_na_klik)
 
-            prijs = haal_prijs_uit_pagina(driver)
-            if not prijs:
-                log.warning("    -> '%s': geen prijs na klik", opt_naam)
-                continue
+                if not prijs:
+                    continue
 
-            log.info("    -> '%s': %s", opt_naam, prijs)
+                if any(kw in opt_naam.lower() for kw in ELEKTRISCH_TERMEN):
+                    elektrisch_prijzen.append(prijs)
+                else:
+                    overig_prijzen.append(prijs)
 
-            eerste_woord = opt_naam.lower().split()[0]
-            if eerste_woord in ELEKTRISCH_TERMEN:
-                elektrisch_prijzen.append(prijs)
-            else:
-                overig_prijzen.append(prijs)
+            if elektrisch_prijzen:
+                prijzen["Elektrisch"] = min(elektrisch_prijzen, key=prijs_naar_float)
+            if overig_prijzen:
+                prijzen["Overig"] = min(overig_prijzen, key=prijs_naar_float)
 
-        # Stap 4: resultaten samenstellen
-        if elektrisch_prijzen:
-            prijzen["Elektrisch"] = min(elektrisch_prijzen, key=prijs_naar_float)
-        if overig_prijzen:
-            prijzen["Overig"] = min(overig_prijzen, key=prijs_naar_float)
-        elif begin_prijs and not elektrisch_prijzen:
-            prijzen["Overig"] = begin_prijs
-
-        # Als configurator helemaal geen resultaat gaf → voorraad als laatste kans
+        # Fallback: voorraad
         if not prijzen:
             log.info("  -> %s: configurator leeg, probeer voorraad", model_naam)
             driver.get(model_url)
