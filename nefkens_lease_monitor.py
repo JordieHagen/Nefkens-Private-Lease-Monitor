@@ -92,7 +92,7 @@ def normaliseer_prijs(prijs_tekst):
     """Normaliseert een prijs naar '€ XXX,-' formaat."""
     if not prijs_tekst:
         return None
-    prijs_tekst = prijs_tekst.replace(" ", " ").strip()
+    prijs_tekst = prijs_tekst.replace("\u00a0", " ").strip()
     m = re.search(r"€\s*([\d.]+(?:,\d+)?)", prijs_tekst)
     if not m:
         return prijs_tekst
@@ -193,7 +193,6 @@ def scrape_overzicht_prijzen(driver, merk):
                 continue
             verwerkt.add(model_naam)
 
-            # Zoek de prijs in het omliggende kaart-element via JavaScript DOM-traversal
             bedrag = driver.execute_script("""
                 var link = arguments[0];
                 var el = link.parentElement;
@@ -257,7 +256,6 @@ def scrape_voorraad_prijzen(driver, model_naam):
                 continue
 
             prijs = normaliseer_prijs(f"€ {prijs_m.group(1)}")
-            # Bekijk context: 6 regels voor en na de prijs
             context = " ".join(lines[max(0, i - 6): i + 6]).lower()
 
             if any(kw in context for kw in ELEKTRISCH_KW):
@@ -326,7 +324,6 @@ def _parse_brandstof_prijzen_tekst(body_text):
         if not is_elektrisch and not is_overig:
             continue
 
-        # Zoek prijs in dezelfde en de volgende 4 regels
         for wl in lines[i: min(len(lines), i + 5)]:
             prijs_m = re.search(r"€\s*([\d.]+(?:,\d+)?)", wl)
             if prijs_m and is_lease_prijs(prijs_m.group(1)):
@@ -370,28 +367,75 @@ def _vind_brandstof_opties_js(driver):
 
 
 def _klik_optie_js(driver, naam):
-    """Klikt een optie via JavaScript met contains-matching op de volledige naam."""
+    """
+    Klikt een brandstof-optie via JavaScript.
+    Stap 1: zoek element met directe tekstinhoud (eigen tekstnodes, geen children).
+    Stap 2: fallback op innerText-match over bredere elementen.
+    Stap 3: klik de dichtste interactieve ancestor via closest() met volledige
+            mousedown/mouseup/click events en bubbling.
+    """
     try:
         geklikt = driver.execute_script("""
             var naam = arguments[0].toLowerCase();
-            var kandidaten = document.querySelectorAll(
-                'button, label, li, a, [role="button"], [role="tab"], [role="option"]'
-            );
-            for (var i = 0; i < kandidaten.length; i++) {
-                var el = kandidaten[i];
-                var tekst = (el.innerText || el.textContent || '').trim().toLowerCase();
-                if (tekst === naam) {
-                    el.scrollIntoView({block: 'center'});
-                    el.click();
-                    return true;
+
+            // Stap 1: directe tekst-match (alleen eigen tekstnodes, geen children)
+            var alle = document.querySelectorAll('*');
+            var treffer = null;
+            for (var i = 0; i < alle.length; i++) {
+                var el = alle[i];
+                var directTekst = '';
+                for (var c = el.firstChild; c; c = c.nextSibling) {
+                    if (c.nodeType === 3) directTekst += c.textContent;
+                }
+                directTekst = directTekst.trim().toLowerCase();
+                if (directTekst === naam) { treffer = el; break; }
+            }
+
+            // Stap 2: fallback — innerText-match op bredere elementen
+            if (!treffer) {
+                var kandidaten = document.querySelectorAll(
+                    'button, label, li, a, span, div, [role="button"], [role="tab"], [role="option"]'
+                );
+                for (var i = 0; i < kandidaten.length; i++) {
+                    var el = kandidaten[i];
+                    var tekst = (el.innerText || el.textContent || '').trim().toLowerCase();
+                    if (tekst === naam) { treffer = el; break; }
                 }
             }
-            return false;
+
+            if (!treffer) return false;
+
+            treffer.scrollIntoView({block: 'center'});
+
+            // Stap 3: klik de dichtste interactieve ancestor (of element zelf)
+            var target = treffer.closest(
+                'li, label, button, a, [role="button"], [role="option"], [role="tab"]'
+            ) || treffer;
+
+            ['mousedown', 'mouseup', 'click'].forEach(function(type) {
+                target.dispatchEvent(new MouseEvent(type, {bubbles: true, cancelable: true}));
+            });
+
+            return true;
         """, naam.lower())
         return bool(geklikt)
     except Exception as e:
         log.warning("    -> Klikfout '%s': %s", naam, e)
     return False
+
+
+def rond_prijs_af(prijs_str):
+    """Rondt configurator-prijs af naar heel bedrag: '€ 468,99,-' → '€ 469,-'"""
+    if not prijs_str:
+        return prijs_str
+    m = re.search(r"€\s*([\d.]+(?:,\d+)?)", prijs_str)
+    if not m:
+        return prijs_str
+    try:
+        val = float(m.group(1).replace(".", "").replace(",", "."))
+        return f"€ {round(val)},-"
+    except ValueError:
+        return prijs_str
 
 
 def scrape_configurator_prijzen(driver, model_naam, model_url):
@@ -401,7 +445,7 @@ def scrape_configurator_prijzen(driver, model_naam, model_url):
     Aanpak:
     1. Laad configurator (geconstrueerde URL of via 'Stel zelf samen' link)
     2. Poging A: tekst-parsing — werkt als pagina alle opties+prijzen tegelijk toont
-    3. Poging B: klikken per brandstofoptie via JS contains-match
+    3. Poging B: klikken per brandstofoptie via JS closest() + dispatchEvent
     4. Fallback: 'Bekijk voorraad' → goedkoopste elektrisch/overig uit voorraadlijst
 
     Geeft dict terug: {'Elektrisch': '€ 509,-', 'Overig': '€ 469,-'}
@@ -414,7 +458,6 @@ def scrape_configurator_prijzen(driver, model_naam, model_url):
             return prijzen
         basis_url = basis_m.group(1)
 
-        # Stap 1: modelpagina laden en configurator-link zoeken
         driver.get(model_url)
         time.sleep(5)
         log.info("  -> Modelpagina: %s", model_url)
@@ -424,7 +467,6 @@ def scrape_configurator_prijzen(driver, model_naam, model_url):
             configurator_url = f"{basis_url}/configurator/{model_naam}/steps"
             log.info("  -> Geconstrueerde configurator-URL: %s", configurator_url)
 
-        # Stap 2: configurator laden
         driver.get(configurator_url)
         time.sleep(8)
         log.info("  -> Configurator geladen: %s", driver.current_url)
@@ -437,9 +479,6 @@ def scrape_configurator_prijzen(driver, model_naam, model_url):
         log.info("  -> Tekst-parsing: %s", prijzen)
 
         if len(prijzen) >= 1:
-            # Controleer of er meerdere brandstoftypes zijn die we missen
-            # (bijv. alleen Overig gevonden maar ook Elektrisch verwacht)
-            # Stuur door naar klikken als er opties zijn die we nog niet hebben
             opties = _vind_brandstof_opties_js(driver)
             log.info("  -> Klikbare opties gevonden: %s", [o["naam"] for o in opties])
 
@@ -450,17 +489,16 @@ def scrape_configurator_prijzen(driver, model_naam, model_url):
             if heeft_elektr_optie and "Elektrisch" not in prijzen:
                 log.info("  -> Elektrisch-optie gevonden maar geen prijs → klikken")
             elif prijzen:
-                return prijzen  # Tekst-parsing was voldoende
+                return prijzen
 
         # Poging B: klikken per brandstofoptie
         opties = _vind_brandstof_opties_js(driver)
         log.info("  -> Klikbare opties: %s", [o["naam"] for o in opties])
 
         if not opties:
-            # Geen klikbare opties → enkelvoudig model
             begin_prijs = haal_prijs_uit_pagina(driver)
             if begin_prijs:
-                prijzen.setdefault("Overig", begin_prijs)
+                prijzen.setdefault("Overig", rond_prijs_af(begin_prijs))
         else:
             elektrisch_prijzen = []
             overig_prijzen = []
@@ -486,9 +524,9 @@ def scrape_configurator_prijzen(driver, model_naam, model_url):
                     overig_prijzen.append(prijs)
 
             if elektrisch_prijzen:
-                prijzen["Elektrisch"] = min(elektrisch_prijzen, key=prijs_naar_float)
+                prijzen["Elektrisch"] = rond_prijs_af(min(elektrisch_prijzen, key=prijs_naar_float))
             if overig_prijzen:
-                prijzen["Overig"] = min(overig_prijzen, key=prijs_naar_float)
+                prijzen["Overig"] = rond_prijs_af(min(overig_prijzen, key=prijs_naar_float))
 
         # Fallback: voorraad
         if not prijzen:
@@ -513,11 +551,9 @@ def scrape_merk(driver, merk):
     log.info("=" * 50)
     log.info("Scrapen: %s", merk["naam"])
 
-    # Standaard merken: vanafprijzen direct van de overzichtspagina
     if merk["naam"] not in CONFIGURATOR_MERKEN:
         return scrape_overzicht_prijzen(driver, merk)
 
-    # Alfa Romeo & Jeep: per model via configurator/voorraad
     prijzen = {}
 
     try:
