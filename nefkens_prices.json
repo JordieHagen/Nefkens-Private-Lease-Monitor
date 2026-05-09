@@ -2,35 +2,35 @@
   "bijgewerkt_op": "2026-05-09T07:24:46.054752",
   "prijzen": {
     "Peugeot": {
-      "e-208": "€ 419,",
-      "e-2008%20SUV": "€ 548,",
-      "e-308": "€ 604,",
-      "e-308%20SW": "€ 629,",
-      "Nieuwe%20e-3008": "€ 670,",
-      "e-408": "€ 655,",
-      "e-5008": "€ 711,"
+      "e-208": "€ 419,-",
+      "e-2008 SUV": "€ 548,-",
+      "e-308": "€ 604,-",
+      "e-308 SW": "€ 629,-",
+      "Nieuwe e-3008": "€ 670,-",
+      "e-408": "€ 655,-",
+      "e-5008": "€ 711,-"
     },
     "Citroën": {
-      "AMI": "€ 169,",
-      "Nieuwe%20C3": "€ 479,",
-      "Nieuwe%20C3%20Aircross": "€ 499,",
-      "C4": "€ 649,",
-      "C4%20X": "€ 679,"
+      "AMI": "€ 169,-",
+      "Nieuwe C3": "€ 479,-",
+      "Nieuwe C3 Aircross": "€ 499,-",
+      "C4": "€ 649,-",
+      "C4 X": "€ 679,-"
     },
     "DS Automobiles": {
-      "DS%203": "€ 585,",
-      "DS%203%20E-TENSE": "€ 640,",
-      "N%C2%B04%20Plug-in%20Hybrid": "€ 683,",
-      "N%C2%B04%20Elektrisch": "€ 660,",
-      "N%C2%B08": "€ 893,"
+      "DS 3": "€ 585,-",
+      "DS 3 E-TENSE": "€ 640,-",
+      "N°4 Plug-in Hybrid": "€ 683,-",
+      "N°4 Elektrisch": "€ 660,-",
+      "N°8": "€ 893,-"
     },
     "Opel": {
-      "Rocks": "€ 171,",
-      "Astra%205-deurs": "€ 869,",
-      "Astra%20Sports%20Tourer": "€ 893,"
+      "Rocks": "€ 171,-",
+      "Astra 5-deurs": "€ 869,-",
+      "Astra Sports Tourer": "€ 893,-"
     },
     "Fiat": {
-      "Topolino": "€ 169,"
+      "Topolino": "€ 169,-"
     },
     "Alfa Romeo": {
       "Junior (Overig)": "€ 468,99,-",
@@ -39,11 +39,11 @@
     "Jeep": {},
     "Abarth": {},
     "Lancia": {
-      "Ypsilon": "€ 509,",
-      "Ypsilon%20MHEV": "€ 411,"
+      "Ypsilon": "€ 509,-",
+      "Ypsilon MHEV": "€ 411,-"
     },
     "Leapmotor": {
-      "B10": "€ 459,"
+      "B10": "€ 459,-"
     }
   }
 }
