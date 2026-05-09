@@ -1,10 +1,10 @@
 {
-  "bijgewerkt_op": "2026-05-09T14:07:50.985116",
+  "bijgewerkt_op": "2026-05-09T15:03:12.752060",
   "prijzen": {
     "Peugeot": {
-      "e-208": "€ 419,-",
-      "208": "€ 431,-",
-      "e-2008 SUV": "€ 548,-",
+      "e-208": "€ 401,-",
+      "208": "€ 423,-",
+      "e-2008 SUV": "€ 515,-",
       "2008 SUV": "€ 522,-",
       "e-308": "€ 604,-",
       "308": "€ 674,-",
@@ -12,7 +12,7 @@
       "308 SW": "€ 693,-",
       "3008": "€ 711,-",
       "Nieuwe e-3008": "€ 670,-",
-      "e-408": "€ 655,-",
+      "e-408": "€ 647,-",
       "408": "€ 717,-",
       "5008": "€ 773,-",
       "e-5008": "€ 711,-"
@@ -26,29 +26,54 @@
       "ë-C4": "€ 599,-",
       "C4": "€ 649,-",
       "ë-C4 X": "€ 629,-",
-      "C4 X": "€ 679,-"
+      "C4 X": "€ 679,-",
+      "ë-C5 Aircross": "€ 784,-",
+      "Nieuwe C5 Aircross": "€ 688,-"
     },
     "DS Automobiles": {
       "DS 3": "€ 585,-",
       "DS 3 E-TENSE": "€ 640,-",
       "N°4 Plug-in Hybrid": "€ 683,-",
       "N°4 Elektrisch": "€ 660,-",
+      "DS 7": "€ 808,-",
       "N°8": "€ 893,-"
     },
     "Opel": {
       "Rocks": "€ 171,-",
-      "Astra 5-deurs": "€ 869,-",
-      "Astra Sports Tourer": "€ 893,-"
+      "Corsa": "€ 369,-",
+      "Corsa Electric": "€ 397,-",
+      "Mokka": "€ 488,-",
+      "Mokka Electric": "€ 459,-",
+      "Frontera": "€ 535,-",
+      "Frontera Electric": "€ 422,-",
+      "Astra 5-deurs": "€ 656,-",
+      "Astra Electric": "€ 683,-",
+      "Astra Sports Tourer": "€ 671,-",
+      "Astra Sports Tourer Electric": "€ 714,-",
+      "Grandland": "€ 762,-",
+      "Grandland Electric": "€ 720,-"
     },
     "Fiat": {
-      "500e": "€ 503,-",
-      "600": "€ 492,-",
+      "500": "€ 439,-",
+      "500e": "€ 357,-",
+      "600": "€ 488,-",
+      "600e": "€ 472,-",
+      "Grande Panda": "€ 492,-",
+      "Grande Panda e": "€ 454,-",
+      "Pandina": "€ 441,-",
       "Topolino": "€ 169,-"
     },
-    "Alfa Romeo": {},
-    "Jeep": {},
+    "Alfa Romeo": {
+      "Junior (Overig)": "€ 468,99,-",
+      "Tonale (Overig)": "€ 694,99,-"
+    },
+    "Jeep": {
+      "Avenger (Elektrisch)": "€ 438,-",
+      "Compass (Elektrisch)": "€ 450,-"
+    },
     "Abarth": {
-      "500e": "€ 585,-"
+      "500e": "€ 585,-",
+      "600e": "€ 518,-"
     },
     "Lancia": {
       "Ypsilon": "€ 509,-",
