@@ -1,5 +1,5 @@
 {
-  "bijgewerkt_op": "2026-05-27T08:49:25.590664",
+  "bijgewerkt_op": "2026-05-28T08:55:53.021230",
   "prijzen": {
     "Peugeot": {
       "e-208": "€ 419,-",
@@ -32,10 +32,11 @@
     },
     "DS Automobiles": {
       "DS 3": "€ 585,-",
-      "DS 3 E-TENSE": "€ 640,-",
+      "DS 3 E-TENSE": "€ 635,-",
       "N°4 Plug-in Hybrid": "€ 683,-",
       "N°4 Elektrisch": "€ 660,-",
       "DS 7": "€ 789,-",
+      "N°7": "€ 739,-",
       "N°8": "€ 893,-"
     },
     "Opel": {
@@ -58,9 +59,9 @@
       "500e": "€ 299,-",
       "600": "€ 488,-",
       "600e": "€ 472,-",
-      "Grande Panda": "€ 471,-",
-      "Grande Panda e": "€ 391,-",
-      "Pandina": "€ 441,-",
+      "Grande Panda": "€ 449,-",
+      "Grande Panda e": "€ 399,-",
+      "Pandina": "€ 419,-",
       "Topolino": "€ 169,-"
     },
     "Alfa Romeo": {
@@ -72,7 +73,6 @@
       "Compass (Elektrisch)": "€ 676,-"
     },
     "Abarth": {
-      "500e": "€ 585,-",
       "600e": "€ 518,-"
     },
     "Lancia": {
