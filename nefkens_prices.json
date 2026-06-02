@@ -1,8 +1,8 @@
 {
-  "bijgewerkt_op": "2026-06-01T10:33:29.267097",
+  "bijgewerkt_op": "2026-06-02T09:21:29.760326",
   "prijzen": {
     "Peugeot": {
-      "e-208": "€ 419,-",
+      "e-208": "€ 401,-",
       "208": "€ 423,-",
       "e-2008 SUV": "€ 489,-",
       "2008 SUV": "€ 522,-",
@@ -27,21 +27,7 @@
       "N°7": "€ 739,-",
       "N°8": "€ 893,-"
     },
-    "Opel": {
-      "Rocks": "€ 171,-",
-      "Corsa": "€ 369,-",
-      "Corsa Electric": "€ 389,-",
-      "Mokka": "€ 460,-",
-      "Mokka Electric": "€ 459,-",
-      "Frontera": "€ 485,-",
-      "Frontera Electric": "€ 373,-",
-      "Astra 5-deurs": "€ 641,-",
-      "Astra Electric": "€ 616,-",
-      "Astra Sports Tourer": "€ 656,-",
-      "Astra Sports Tourer Electric": "€ 638,-",
-      "Grandland": "€ 743,-",
-      "Grandland Electric": "€ 666,-"
-    },
+    "Opel": {},
     "Fiat": {
       "500": "€ 399,-",
       "500e": "€ 299,-",
