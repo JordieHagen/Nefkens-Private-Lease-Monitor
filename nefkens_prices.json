@@ -1,5 +1,5 @@
 {
-  "bijgewerkt_op": "2026-06-03T10:06:20.889939",
+  "bijgewerkt_op": "2026-06-04T09:01:29.496924",
   "prijzen": {
     "Peugeot": {
       "e-208": "€ 419,-",
@@ -23,16 +23,15 @@
       "Nieuwe C3": "€ 479,-",
       "ë-C3 Aircross": "€ 399,-",
       "Nieuwe C3 Aircross": "€ 499,-",
-      "ë-C4": "€ 599,-",
-      "C4": "€ 649,-",
-      "ë-C4 X": "€ 629,-",
-      "C4 X": "€ 679,-",
+      "ë-C4": "€ 640,-",
+      "C4": "€ 686,-",
+      "ë-C4 X": "€ 717,-",
       "ë-C5 Aircross": "€ 699,-",
       "Nieuwe C5 Aircross": "€ 669,-"
     },
     "DS Automobiles": {
-      "DS 3": "€ 585,-",
-      "DS 3 E-TENSE": "€ 635,-",
+      "DS 3": "€ 554,-",
+      "DS 3 E-TENSE": "€ 605,-",
       "N°4 Plug-in Hybrid": "€ 683,-",
       "N°4 Elektrisch": "€ 660,-",
       "DS 7": "€ 789,-",
@@ -73,10 +72,12 @@
       "Compass (Elektrisch)": "€ 699,-"
     },
     "Abarth": {
+      "500e cabriolet": "€ 589,-",
+      "500e hatchback": "€ 554,-",
       "600e": "€ 518,-"
     },
     "Lancia": {
-      "Ypsilon": "€ 527,-",
+      "Ypsilon": "€ 522,-",
       "Ypsilon MHEV": "€ 399,-"
     },
     "Leapmotor": {
