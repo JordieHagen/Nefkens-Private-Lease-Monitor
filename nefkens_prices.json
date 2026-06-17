@@ -1,5 +1,5 @@
 {
-  "bijgewerkt_op": "2026-06-16T10:22:24.831387",
+  "bijgewerkt_op": "2026-06-17T10:02:38.649738",
   "prijzen": {
     "Peugeot": {
       "e-208": "€ 419,-",
@@ -41,12 +41,12 @@
     },
     "Opel": {
       "Rocks": "€ 171,-",
-      "Corsa": "€ 385,-",
-      "Corsa Electric": "€ 418,-",
+      "Corsa": "€ 399,-",
+      "Corsa Electric": "€ 419,-",
       "Mokka": "€ 460,-",
       "Mokka Electric": "€ 502,-",
-      "Frontera": "€ 510,-",
-      "Frontera Electric": "€ 388,-",
+      "Frontera": "€ 509,-",
+      "Frontera Electric": "€ 389,-",
       "Astra 5-deurs": "€ 641,-",
       "Astra Electric": "€ 616,-",
       "Astra Sports Tourer": "€ 656,-",
@@ -82,10 +82,8 @@
       "Ypsilon MHEV": "€ 399,-"
     },
     "Leapmotor": {
-      "T03": "€ 248,-",
       "B05": "€ 448,-",
-      "B10": "€ 480,-",
-      "C10": "€ 567,-"
+      "B10": "€ 498,-"
     }
   }
 }
