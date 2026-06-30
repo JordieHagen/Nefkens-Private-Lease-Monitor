@@ -1,11 +1,11 @@
 {
-  "bijgewerkt_op": "2026-06-29T10:00:44.075700",
+  "bijgewerkt_op": "2026-06-30T08:40:00.403750",
   "prijzen": {
     "Peugeot": {
       "e-208 GTi": "€ 699,-",
-      "e-208": "€ 391,-",
+      "e-208": "€ 419,-",
       "208": "€ 423,-",
-      "e-2008 SUV": "€ 489,-",
+      "e-2008 SUV": "€ 499,-",
       "2008 SUV": "€ 522,-",
       "e-308": "€ 604,-",
       "308": "€ 674,-",
@@ -70,7 +70,8 @@
       "Tonale (Elektrisch)": "€ 695,-"
     },
     "Jeep": {
-      "Avenger (Elektrisch)": "€ 449,-"
+      "Avenger (Elektrisch)": "€ 449,-",
+      "Compass (Elektrisch)": "€ 450,-"
     },
     "Abarth": {
       "500e cabriolet": "€ 533,-",
