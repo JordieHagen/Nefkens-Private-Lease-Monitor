@@ -1,91 +1,82 @@
 {
-  "bijgewerkt_op": "2026-07-02T08:22:45.654238",
+  "bijgewerkt_op": "2026-07-03T08:21:41.413781",
   "prijzen": {
     "Peugeot": {
-      "e-208 GTi": "€ 716,-",
+      "e-208 GTi": "€ 719,-",
       "e-208": "€ 439,-",
-      "208": "€ 423,-",
-      "e-2008 SUV": "€ 493,-",
-      "2008 SUV": "€ 517,-",
-      "e-308": "€ 610,-",
+      "208": "€ 429,-",
+      "e-2008 SUV": "€ 496,-",
+      "2008 SUV": "€ 535,-",
+      "e-308": "€ 615,-",
       "308": "€ 678,-",
-      "e-308 SW": "€ 635,-",
+      "e-308 SW": "€ 640,-",
       "308 SW": "€ 697,-",
-      "3008": "€ 719,-",
-      "Nieuwe e-3008": "€ 678,-",
-      "e-408": "€ 647,-",
-      "408": "€ 723,-",
-      "5008": "€ 779,-",
-      "e-5008": "€ 719,-"
+      "3008": "€ 724,-",
+      "Nieuwe e-3008": "€ 683,-",
+      "e-408": "€ 637,-",
+      "408": "€ 728,-",
+      "5008": "€ 784,-",
+      "e-5008": "€ 724,-"
     },
     "Citroën": {
-      "AMI": "€ 169,-",
-      "ë-C3": "€ 369,-",
-      "Nieuwe C3": "€ 483,-",
-      "ë-C3 Aircross": "€ 399,-",
-      "Nieuwe C3 Aircross": "€ 505,-",
-      "ë-C4": "€ 606,-",
-      "C4": "€ 657,-",
-      "ë-C4 X": "€ 637,-",
-      "C4 X": "€ 686,-",
-      "ë-C5 Aircross": "€ 699,-",
-      "Nieuwe C5 Aircross": "€ 676,-"
+      "AMI": "€ 170,-",
+      "ë-C3": "€ 484,-",
+      "ë-C3 Aircross": "€ 403,-",
+      "Nieuwe C3 Aircross": "€ 508,-",
+      "ë-C4": "€ 611,-",
+      "C4": "€ 661,-",
+      "ë-C4 X": "€ 642,-",
+      "C4 X": "€ 690,-",
+      "ë-C5 Aircross": "€ 704,-",
+      "Nieuwe C5 Aircross": "€ 681,-"
     },
     "DS Automobiles": {
-      "DS 3": "€ 575,-",
-      "DS 3 E-TENSE": "€ 624,-",
-      "N°4 Plug-in Hybrid": "€ 704,-",
-      "N°4 Elektrisch": "€ 678,-",
-      "N°7": "€ 749,-",
-      "N°8": "€ 909,-"
+      "DS 3": "€ 580,-",
+      "DS 3 E-TENSE": "€ 628,-",
+      "N°4 Plug-in Hybrid": "€ 709,-",
+      "N°4 Elektrisch": "€ 683,-",
+      "DS 7": "€ 816,-",
+      "N°7": "€ 755,-",
+      "N°8": "€ 916,-"
     },
     "Opel": {
-      "Rocks": "€ 171,-",
+      "Rocks": "€ 172,-",
       "Corsa": "€ 399,-",
-      "Corsa Electric": "€ 419,-",
-      "Mokka": "€ 460,-",
-      "Mokka Electric": "€ 502,-",
-      "Frontera": "€ 509,-",
-      "Frontera Electric": "€ 389,-",
-      "Astra 5-deurs": "€ 641,-",
-      "Astra Electric": "€ 616,-",
-      "Astra Sports Tourer": "€ 656,-",
-      "Astra Sports Tourer Electric": "€ 638,-",
-      "Grandland": "€ 743,-",
-      "Grandland Electric": "€ 666,-"
+      "Corsa Electric": "€ 423,-",
+      "Mokka": "€ 493,-",
+      "Mokka Electric": "€ 523,-",
+      "Frontera": "€ 540,-",
+      "Frontera Electric": "€ 469,-",
+      "Astra 5-deurs": "€ 651,-",
+      "Astra Electric": "€ 627,-",
+      "Astra Sports Tourer": "€ 665,-",
+      "Astra Sports Tourer Electric": "€ 647,-",
+      "Grandland": "€ 748,-",
+      "Grandland Electric": "€ 671,-"
     },
-    "Fiat": {
-      "500": "€ 399,-",
-      "500e": "€ 299,-",
-      "600": "€ 499,-",
-      "600e": "€ 449,-",
-      "Grande Panda": "€ 449,-",
-      "Grande Panda e": "€ 399,-",
-      "Pandina": "€ 419,-",
-      "Topolino": "€ 169,-"
-    },
+    "Fiat": {},
     "Alfa Romeo": {
-      "Junior (Elektrisch)": "€ 469,-",
-      "Tonale (Elektrisch)": "€ 695,-"
+      "Junior (Elektrisch)": "€ 473,-",
+      "Tonale (Elektrisch)": "€ 701,-"
     },
     "Jeep": {
-      "Avenger (Elektrisch)": "€ 449,-",
+      "Avenger (Elektrisch)": "€ 453,-",
       "Compass (Elektrisch)": "€ 450,-"
     },
     "Abarth": {
-      "500e cabriolet": "€ 533,-",
-      "500e hatchback": "€ 498,-",
-      "600e": "€ 528,-"
+      "500e cabriolet": "€ 537,-",
+      "500e hatchback": "€ 502,-",
+      "600e": "€ 533,-"
     },
     "Lancia": {
-      "Ypsilon": "€ 509,-",
-      "Ypsilon MHEV": "€ 399,-"
+      "Ypsilon": "€ 531,-",
+      "Ypsilon MHEV": "€ 403,-"
     },
     "Leapmotor": {
-      "T03": "€ 269,-",
-      "B05": "€ 448,-",
-      "B10": "€ 498,-",
-      "C10": "€ 588,-"
+      "T03": "€ 271,-",
+      "B05": "€ 451,-",
+      "B10": "€ 501,-",
+      "C10": "€ 592,-"
     }
   }
 }
