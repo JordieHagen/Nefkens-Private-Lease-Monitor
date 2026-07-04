@@ -1,11 +1,11 @@
 {
-  "bijgewerkt_op": "2026-07-03T08:21:41.413781",
+  "bijgewerkt_op": "2026-07-04T07:58:31.463188",
   "prijzen": {
     "Peugeot": {
       "e-208 GTi": "€ 719,-",
       "e-208": "€ 439,-",
       "208": "€ 429,-",
-      "e-2008 SUV": "€ 496,-",
+      "e-2008 SUV": "€ 519,-",
       "2008 SUV": "€ 535,-",
       "e-308": "€ 615,-",
       "308": "€ 678,-",
@@ -13,7 +13,7 @@
       "308 SW": "€ 697,-",
       "3008": "€ 724,-",
       "Nieuwe e-3008": "€ 683,-",
-      "e-408": "€ 637,-",
+      "e-408": "€ 644,-",
       "408": "€ 728,-",
       "5008": "€ 784,-",
       "e-5008": "€ 724,-"
@@ -43,8 +43,6 @@
       "Rocks": "€ 172,-",
       "Corsa": "€ 399,-",
       "Corsa Electric": "€ 423,-",
-      "Mokka": "€ 493,-",
-      "Mokka Electric": "€ 523,-",
       "Frontera": "€ 540,-",
       "Frontera Electric": "€ 469,-",
       "Astra 5-deurs": "€ 651,-",
@@ -54,10 +52,19 @@
       "Grandland": "€ 748,-",
       "Grandland Electric": "€ 671,-"
     },
-    "Fiat": {},
+    "Fiat": {
+      "500": "€ 399,-",
+      "500e": "€ 299,-",
+      "600": "€ 499,-",
+      "600e": "€ 449,-",
+      "Grande Panda": "€ 481,-",
+      "Grande Panda e": "€ 461,-",
+      "Pandina": "€ 419,-",
+      "Topolino": "€ 169,-"
+    },
     "Alfa Romeo": {
-      "Junior (Elektrisch)": "€ 473,-",
-      "Tonale (Elektrisch)": "€ 701,-"
+      "Junior (Elektrisch)": "€ 489,-",
+      "Tonale (Elektrisch)": "€ 719,-"
     },
     "Jeep": {
       "Avenger (Elektrisch)": "€ 453,-",
@@ -69,8 +76,8 @@
       "600e": "€ 533,-"
     },
     "Lancia": {
-      "Ypsilon": "€ 531,-",
-      "Ypsilon MHEV": "€ 403,-"
+      "Ypsilon": "€ 529,-",
+      "Ypsilon MHEV": "€ 420,-"
     },
     "Leapmotor": {
       "T03": "€ 271,-",
