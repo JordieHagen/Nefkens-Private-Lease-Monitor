@@ -1,5 +1,5 @@
 {
-  "bijgewerkt_op": "2026-07-07T08:35:22.332930",
+  "bijgewerkt_op": "2026-07-08T07:40:48.405672",
   "prijzen": {
     "Peugeot": {
       "e-208 GTi": "€ 719,-",
@@ -31,8 +31,8 @@
       "Nieuwe C5 Aircross": "€ 681,-"
     },
     "DS Automobiles": {
-      "DS 3": "€ 580,-",
-      "DS 3 E-TENSE": "€ 628,-",
+      "DS 3": "€ 642,-",
+      "DS 3 E-TENSE": "€ 701,-",
       "N°4 Plug-in Hybrid": "€ 709,-",
       "N°4 Elektrisch": "€ 683,-",
       "DS 7": "€ 816,-",
@@ -43,7 +43,9 @@
       "Rocks": "€ 172,-",
       "Corsa": "€ 399,-",
       "Corsa Electric": "€ 423,-",
-      "Frontera": "€ 540,-",
+      "Mokka": "€ 498,-",
+      "Mokka Electric": "€ 528,-",
+      "Frontera": "€ 533,-",
       "Frontera Electric": "€ 469,-",
       "Astra 5-deurs": "€ 651,-",
       "Astra Electric": "€ 627,-",
@@ -67,7 +69,7 @@
     },
     "Jeep": {
       "Avenger (Elektrisch)": "€ 453,-",
-      "Compass (Elektrisch)": "€ 450,-"
+      "Compass (Elektrisch)": "€ 704,-"
     },
     "Abarth": {
       "500e cabriolet": "€ 537,-",
