@@ -1,9 +1,9 @@
 {
-  "bijgewerkt_op": "2026-07-15T07:24:42.089045",
+  "bijgewerkt_op": "2026-07-16T07:32:40.563852",
   "prijzen": {
     "Peugeot": {
       "e-208 GTi": "€ 719,-",
-      "e-208": "€ 410,-",
+      "e-208": "€ 421,-",
       "208": "€ 425,-",
       "e-2008 SUV": "€ 503,-",
       "2008 SUV": "€ 535,-",
@@ -20,7 +20,8 @@
     },
     "Citroën": {
       "AMI": "€ 171,-",
-      "ë-C3": "€ 484,-",
+      "ë-C3": "€ 384,-",
+      "Nieuwe C3": "€ 500,-",
       "ë-C3 Aircross": "€ 399,-",
       "Nieuwe C3 Aircross": "€ 499,-",
       "ë-C4": "€ 612,-",
@@ -40,27 +41,27 @@
       "N°8": "€ 916,-"
     },
     "Opel": {
-      "Rocks": "€ 172,-",
-      "Corsa": "€ 399,-",
-      "Corsa Electric": "€ 423,-",
-      "Mokka": "€ 498,-",
-      "Mokka Electric": "€ 528,-",
-      "Frontera": "€ 533,-",
+      "Rocks": "€ 159,-",
+      "Corsa": "€ 439,-",
+      "Corsa Electric": "€ 460,-",
+      "Mokka": "€ 592,-",
+      "Mokka Electric": "€ 600,-",
+      "Frontera": "€ 522,-",
       "Frontera Electric": "€ 469,-",
-      "Astra 5-deurs": "€ 651,-",
-      "Astra Electric": "€ 627,-",
-      "Astra Sports Tourer": "€ 665,-",
-      "Astra Sports Tourer Electric": "€ 647,-",
-      "Grandland": "€ 748,-",
-      "Grandland Electric": "€ 671,-"
+      "Astra 5-deurs": "€ 679,-",
+      "Astra Electric": "€ 698,-",
+      "Astra Sports Tourer": "€ 695,-",
+      "Astra Sports Tourer Electric": "€ 720,-",
+      "Grandland": "€ 749,-",
+      "Grandland Electric": "€ 669,-"
     },
     "Fiat": {
       "500": "€ 486,-",
       "500e": "€ 349,-",
-      "600": "€ 577,-",
+      "600": "€ 571,-",
       "600e": "€ 468,-",
-      "Grande Panda": "€ 516,-",
-      "Grande Panda e": "€ 482,-",
+      "Grande Panda": "€ 503,-",
+      "Grande Panda e": "€ 409,-",
       "Pandina": "€ 456,-",
       "Topolino": "€ 169,-"
     },
@@ -85,7 +86,8 @@
       "T03": "€ 271,-",
       "B05": "€ 451,-",
       "B10": "€ 501,-",
-      "C10": "€ 592,-"
+      "C10": "€ 592,-",
+      "B03X": "€ 394,-"
     }
   }
 }
