@@ -1,5 +1,5 @@
 {
-  "bijgewerkt_op": "2026-08-06T07:50:02.995873",
+  "bijgewerkt_op": "2026-08-07T06:16:57.755504",
   "prijzen": {
     "Peugeot": {
       "e-208 GTi": "€ 719,-",
@@ -29,7 +29,8 @@
       "ë-C4 X": "€ 665,-",
       "C4 X": "€ 699,-",
       "ë-C5 Aircross": "€ 739,-",
-      "C5 Aircross": "€ 715,-"
+      "C5 Aircross": "€ 715,-",
+      "ë-Berlingo": "€ 896,-"
     },
     "DS Automobiles": {
       "DS 3": "€ 579,-",
@@ -45,12 +46,12 @@
       "Corsa": "€ 439,-",
       "Corsa Electric": "€ 459,-",
       "Mokka": "€ 580,-",
-      "Mokka Electric": "€ 599,-",
+      "Mokka Electric": "€ 600,-",
       "Frontera": "€ 522,-",
       "Frontera Electric": "€ 469,-",
-      "Astra 5-deurs": "€ 659,-",
+      "Astra 5-deurs": "€ 692,-",
       "Astra Electric": "€ 649,-",
-      "Astra Sports Tourer": "€ 674,-",
+      "Astra Sports Tourer": "€ 708,-",
       "Astra Sports Tourer Electric": "€ 670,-",
       "Grandland": "€ 749,-",
       "Grandland Electric": "€ 669,-"
@@ -71,7 +72,7 @@
     },
     "Jeep": {
       "Avenger (Elektrisch)": "€ 453,-",
-      "Compass (Elektrisch)": "€ 704,-"
+      "Compass (Elektrisch)": "€ 699,-"
     },
     "Abarth": {
       "500e cabriolet": "€ 567,-",
@@ -79,12 +80,12 @@
       "600e": "€ 599,-"
     },
     "Lancia": {
-      "Ypsilon": "€ 529,-",
-      "Ypsilon MHEV": "€ 419,-"
+      "Ypsilon": "€ 549,-",
+      "Ypsilon MHEV": "€ 420,-"
     },
     "Leapmotor": {
-      "T03": "€ 269,-",
-      "B03X": "€ 419,-",
+      "T03": "€ 271,-",
+      "B03X": "€ 394,-",
       "B05": "€ 451,-",
       "B10": "€ 501,-",
       "C10": "€ 592,-"
