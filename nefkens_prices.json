@@ -1,94 +1,94 @@
 {
-  "bijgewerkt_op": "2026-09-02T09:30:59.440944",
+  "bijgewerkt_op": "2026-09-03T09:41:10.018932",
   "prijzen": {
     "Peugeot": {
-      "e-208 GTi": "€ 719,-",
-      "e-208": "€ 439,-",
-      "208": "€ 445,-",
-      "e-2008 SUV": "€ 519,-",
-      "2008 SUV": "€ 535,-",
-      "e-308": "€ 615,-",
-      "308": "€ 677,-",
-      "e-308 SW": "€ 640,-",
-      "308 SW": "€ 702,-",
-      "3008": "€ 719,-",
-      "e-3008": "€ 685,-",
-      "5008": "€ 779,-",
-      "e-5008": "€ 726,-",
-      "Nieuwe 408": "€ 729,-",
-      "Nieuwe e-408": "€ 669,-"
+      "e-208 GTi": "€ 721,-",
+      "e-208": "€ 441,-",
+      "208": "€ 447,-",
+      "e-2008 SUV": "€ 521,-",
+      "2008 SUV": "€ 537,-",
+      "e-308": "€ 616,-",
+      "308": "€ 678,-",
+      "e-308 SW": "€ 641,-",
+      "308 SW": "€ 703,-",
+      "3008": "€ 721,-",
+      "e-3008": "€ 687,-",
+      "5008": "€ 781,-",
+      "e-5008": "€ 727,-",
+      "Nieuwe 408": "€ 731,-",
+      "Nieuwe e-408": "€ 671,-"
     },
     "Citroën": {
-      "AMI": "€ 169,-",
-      "ë-C3": "€ 420,-",
-      "C3": "€ 515,-",
+      "AMI": "€ 170,-",
+      "ë-C3": "€ 421,-",
+      "C3": "€ 516,-",
       "ë-C3 Aircross": "€ 460,-",
-      "C3 Aircross": "€ 539,-",
-      "ë-C4": "€ 612,-",
-      "C4": "€ 658,-",
-      "ë-C4 X": "€ 686,-",
-      "C4 X": "€ 736,-",
-      "ë-C5 Aircross": "€ 739,-",
-      "C5 Aircross": "€ 750,-",
-      "ë-Berlingo": "€ 896,-"
+      "C3 Aircross": "€ 540,-",
+      "ë-C4": "€ 614,-",
+      "C4": "€ 660,-",
+      "ë-C4 X": "€ 688,-",
+      "C4 X": "€ 738,-",
+      "ë-C5 Aircross": "€ 741,-",
+      "C5 Aircross": "€ 752,-",
+      "ë-Berlingo": "€ 897,-"
     },
     "DS Automobiles": {
-      "DS 3": "€ 579,-",
-      "DS 3 E-TENSE": "€ 619,-",
-      "N°4 Plug-in Hybrid": "€ 709,-",
-      "N°4 Elektrisch": "€ 679,-",
-      "DS 7": "€ 851,-",
-      "N°7": "€ 749,-",
-      "N°8": "€ 899,-"
+      "DS 3": "€ 580,-",
+      "DS 3 E-TENSE": "€ 620,-",
+      "N°4 Plug-in Hybrid": "€ 711,-",
+      "N°4 Elektrisch": "€ 681,-",
+      "DS 7": "€ 852,-",
+      "N°7": "€ 751,-",
+      "N°8": "€ 901,-"
     },
     "Opel": {
-      "Rocks": "€ 159,-",
-      "Corsa": "€ 439,-",
-      "Corsa Electric": "€ 459,-",
-      "Mokka": "€ 580,-",
-      "Mokka Electric": "€ 599,-",
-      "Frontera": "€ 529,-",
-      "Frontera Electric": "€ 469,-",
-      "Astra 5-deurs": "€ 659,-",
-      "Astra Electric": "€ 650,-",
-      "Astra Sports Tourer": "€ 674,-",
-      "Astra Sports Tourer Electric": "€ 670,-",
-      "Grandland": "€ 749,-",
-      "Grandland Electric": "€ 670,-"
+      "Rocks": "€ 160,-",
+      "Corsa": "€ 441,-",
+      "Corsa Electric": "€ 461,-",
+      "Mokka": "€ 581,-",
+      "Mokka Electric": "€ 601,-",
+      "Frontera": "€ 531,-",
+      "Frontera Electric": "€ 471,-",
+      "Astra 5-deurs": "€ 660,-",
+      "Astra Electric": "€ 651,-",
+      "Astra Sports Tourer": "€ 675,-",
+      "Astra Sports Tourer Electric": "€ 672,-",
+      "Grandland": "€ 751,-",
+      "Grandland Electric": "€ 671,-"
     },
     "Fiat": {
-      "500": "€ 469,-",
-      "500e": "€ 339,-",
-      "600": "€ 559,-",
-      "600e": "€ 468,-",
-      "Grande Panda": "€ 486,-",
-      "Grande Panda e": "€ 379,-",
-      "Pandina": "€ 419,-",
-      "Topolino": "€ 169,-"
+      "500": "€ 470,-",
+      "500e": "€ 340,-",
+      "600": "€ 560,-",
+      "600e": "€ 469,-",
+      "Grande Panda": "€ 488,-",
+      "Grande Panda e": "€ 380,-",
+      "Pandina": "€ 420,-",
+      "Topolino": "€ 170,-"
     },
     "Alfa Romeo": {
-      "Junior (Elektrisch)": "€ 489,-",
-      "Tonale (Elektrisch)": "€ 719,-"
+      "Junior (Elektrisch)": "€ 490,-",
+      "Tonale (Elektrisch)": "€ 720,-"
     },
     "Jeep": {
-      "Avenger (Elektrisch)": "€ 453,-",
-      "Compass (Elektrisch)": "€ 710,-"
+      "Avenger (Elektrisch)": "€ 454,-",
+      "Compass (Elektrisch)": "€ 711,-"
     },
     "Abarth": {
-      "500e cabriolet": "€ 567,-",
-      "500e hatchback": "€ 529,-",
-      "600e": "€ 599,-"
+      "500e cabriolet": "€ 568,-",
+      "500e hatchback": "€ 530,-",
+      "600e": "€ 600,-"
     },
     "Lancia": {
-      "Ypsilon": "€ 549,-",
-      "Ypsilon MHEV": "€ 419,-"
+      "Ypsilon": "€ 551,-",
+      "Ypsilon MHEV": "€ 421,-"
     },
     "Leapmotor": {
-      "T03": "€ 259,-",
-      "B03X": "€ 419,-",
-      "B05": "€ 429,-",
-      "B10": "€ 489,-",
-      "C10": "€ 575,-"
+      "T03": "€ 260,-",
+      "B03X": "€ 421,-",
+      "B05": "€ 431,-",
+      "B10": "€ 491,-",
+      "C10": "€ 576,-"
     }
   }
 }
