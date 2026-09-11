@@ -1,18 +1,18 @@
 {
-  "bijgewerkt_op": "2026-09-10T09:38:06.963564",
+  "bijgewerkt_op": "2026-09-11T09:34:56.619479",
   "prijzen": {
     "Peugeot": {
       "e-208 GTi": "€ 719,-",
-      "e-208": "€ 439,-",
-      "208": "€ 445,-",
+      "e-208": "€ 436,-",
+      "208": "€ 430,-",
       "e-2008 SUV": "€ 519,-",
-      "2008 SUV": "€ 535,-",
-      "e-308": "€ 615,-",
-      "308": "€ 677,-",
-      "e-308 SW": "€ 640,-",
+      "2008 SUV": "€ 534,-",
+      "e-308": "€ 590,-",
+      "308": "€ 657,-",
+      "e-308 SW": "€ 637,-",
       "308 SW": "€ 702,-",
       "3008": "€ 719,-",
-      "e-3008": "€ 685,-",
+      "e-3008": "€ 683,-",
       "5008": "€ 779,-",
       "e-5008": "€ 726,-",
       "Nieuwe 408": "€ 729,-",
@@ -22,10 +22,10 @@
       "AMI": "€ 169,-",
       "ë-C3": "€ 420,-",
       "C3": "€ 515,-",
-      "ë-C3 Aircross": "€ 460,-",
-      "C3 Aircross": "€ 539,-",
-      "ë-C4": "€ 612,-",
-      "C4": "€ 658,-",
+      "ë-C3 Aircross": "€ 492,-",
+      "C3 Aircross": "€ 532,-",
+      "ë-C4": "€ 607,-",
+      "C4": "€ 657,-",
       "ë-C4 X": "€ 686,-",
       "C4 X": "€ 736,-",
       "ë-C5 Aircross": "€ 739,-",
@@ -43,15 +43,15 @@
     },
     "Opel": {
       "Rocks": "€ 159,-",
-      "Corsa": "€ 439,-",
-      "Corsa Electric": "€ 459,-",
-      "Mokka": "€ 580,-",
+      "Corsa": "€ 415,-",
+      "Corsa Electric": "€ 430,-",
+      "Mokka": "€ 550,-",
       "Mokka Electric": "€ 599,-",
       "Frontera": "€ 529,-",
       "Frontera Electric": "€ 469,-",
-      "Astra 5-deurs": "€ 659,-",
+      "Astra 5-deurs": "€ 646,-",
       "Astra Electric": "€ 650,-",
-      "Astra Sports Tourer": "€ 674,-",
+      "Astra Sports Tourer": "€ 661,-",
       "Astra Sports Tourer Electric": "€ 670,-",
       "Grandland": "€ 749,-",
       "Grandland Electric": "€ 670,-"
@@ -63,7 +63,7 @@
       "600e": "€ 468,-",
       "Grande Panda": "€ 488,-",
       "Grande Panda e": "€ 379,-",
-      "Pandina": "€ 419,-",
+      "Pandina": "€ 456,-",
       "Topolino": "€ 169,-"
     },
     "Alfa Romeo": {
@@ -72,7 +72,7 @@
     },
     "Jeep": {
       "Avenger (Elektrisch)": "€ 449,-",
-      "Compass (Elektrisch)": "€ 710,-"
+      "Compass (Elektrisch)": "€ 733,-"
     },
     "Abarth": {
       "500e cabriolet": "€ 567,-",
