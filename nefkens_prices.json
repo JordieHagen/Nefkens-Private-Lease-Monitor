@@ -1,5 +1,5 @@
 {
-  "bijgewerkt_op": "2026-09-21T10:41:19.509570",
+  "bijgewerkt_op": "2026-09-22T09:54:27.459792",
   "prijzen": {
     "Peugeot": {
       "e-208 GTi": "€ 723,-",
@@ -56,16 +56,7 @@
       "Grandland": "€ 749,-",
       "Grandland Electric": "€ 674,-"
     },
-    "Fiat": {
-      "500": "€ 469,-",
-      "500e": "€ 342,-",
-      "600": "€ 559,-",
-      "600e": "€ 472,-",
-      "Grande Panda": "€ 488,-",
-      "Grande Panda e": "€ 383,-",
-      "Pandina": "€ 419,-",
-      "Topolino": "€ 174,-"
-    },
+    "Fiat": {},
     "Alfa Romeo": {
       "Junior (Elektrisch)": "€ 489,-",
       "Tonale (Elektrisch)": "€ 719,-"
