@@ -1,5 +1,5 @@
 {
-  "bijgewerkt_op": "2026-10-13T12:40:14.095246",
+  "bijgewerkt_op": "2026-10-14T10:06:31.315845",
   "prijzen": {
     "Peugeot": {
       "e-208 GTi": "€ 735,-",
@@ -15,8 +15,7 @@
       "e-3008": "€ 730,-",
       "5008": "€ 762,-",
       "e-5008": "€ 768,-",
-      "Nieuwe 408": "€ 746,-",
-      "Nieuwe e-408": "€ 690,-"
+      "Nieuwe 408": "€ 755,-"
     },
     "Citroën": {
       "AMI": "€ 174,-",
@@ -42,7 +41,7 @@
     },
     "Opel": {
       "Rocks": "€ 167,-",
-      "Corsa": "€ 449,-",
+      "Corsa": "€ 439,-",
       "Corsa Electric": "€ 455,-",
       "Mokka": "€ 576,-",
       "Mokka Electric": "€ 591,-",
@@ -67,8 +66,7 @@
     },
     "Alfa Romeo": {
       "Junior (Elektrisch)": "€ 469,-",
-      "Tonale (Elektrisch)": "€ 810,-",
-      "Tonale (Overig)": "€ 450,-"
+      "Tonale (Elektrisch)": "€ 713,-"
     },
     "Jeep": {
       "Avenger (Elektrisch)": "€ 499,-",
@@ -84,9 +82,7 @@
       "Ypsilon MHEV": "€ 419,-"
     },
     "Leapmotor": {
-      "T03": "€ 297,-",
-      "B05": "€ 522,-",
-      "C10": "€ 623,-"
+      "B05": "€ 522,-"
     }
   }
 }
