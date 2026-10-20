@@ -1,8 +1,8 @@
 {
-  "bijgewerkt_op": "2026-10-19T10:43:59.116603",
+  "bijgewerkt_op": "2026-10-20T10:00:43.065529",
   "prijzen": {
     "Peugeot": {
-      "e-208 GTi": "€ 720,-",
+      "e-208 GTi": "€ 735,-",
       "e-208": "€ 510,-",
       "208": "€ 439,-",
       "e-2008 SUV": "€ 549,-",
@@ -29,7 +29,8 @@
       "ë-C4 X": "€ 706,-",
       "C4 X": "€ 737,-",
       "ë-C5 Aircross": "€ 759,-",
-      "C5 Aircross": "€ 767,-"
+      "C5 Aircross": "€ 767,-",
+      "ë-Berlingo": "€ 900,-"
     },
     "DS Automobiles": {
       "DS 3": "€ 572,-",
@@ -42,14 +43,14 @@
     },
     "Opel": {
       "Rocks": "€ 179,-",
-      "Corsa": "€ 451,-",
+      "Corsa": "€ 463,-",
       "Corsa Electric": "€ 455,-",
       "Mokka": "€ 612,-",
       "Mokka Electric": "€ 587,-",
       "Frontera": "€ 529,-",
       "Frontera Electric": "€ 429,-",
       "Astra 5-deurs": "€ 695,-",
-      "Astra Electric": "€ 746,-",
+      "Astra Electric": "€ 732,-",
       "Astra Sports Tourer": "€ 712,-",
       "Astra Sports Tourer Electric": "€ 717,-",
       "Grandland": "€ 745,-",
