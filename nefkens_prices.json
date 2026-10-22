@@ -1,15 +1,94 @@
 {
-  "bijgewerkt_op": "2026-10-21T10:01:35.565708",
+  "bijgewerkt_op": "2026-10-22T10:04:00.444858",
   "prijzen": {
-    "Peugeot": {},
-    "Citroën": {},
-    "DS Automobiles": {},
-    "Opel": {},
-    "Fiat": {},
-    "Alfa Romeo": {},
-    "Jeep": {},
-    "Abarth": {},
-    "Lancia": {},
-    "Leapmotor": {}
+    "Peugeot": {
+      "e-208 GTi": "€ 735,-",
+      "e-208": "€ 510,-",
+      "208": "€ 429,-",
+      "e-2008 SUV": "€ 549,-",
+      "2008 SUV": "€ 519,-",
+      "e-308": "€ 666,-",
+      "308": "€ 699,-",
+      "e-308 SW": "€ 714,-",
+      "308 SW": "€ 705,-",
+      "3008": "€ 765,-",
+      "e-3008": "€ 719,-",
+      "5008": "€ 825,-",
+      "e-5008": "€ 766,-",
+      "Nieuwe 408": "€ 771,-",
+      "Nieuwe e-408": "€ 745,-"
+    },
+    "Citroën": {
+      "AMI": "€ 177,-",
+      "ë-C3": "€ 440,-",
+      "C3": "€ 489,-",
+      "ë-C3 Aircross": "€ 489,-",
+      "C3 Aircross": "€ 526,-",
+      "ë-C4": "€ 662,-",
+      "C4": "€ 659,-",
+      "ë-C4 X": "€ 706,-",
+      "C4 X": "€ 737,-",
+      "ë-C5 Aircross": "€ 759,-",
+      "C5 Aircross": "€ 755,-",
+      "ë-Berlingo": "€ 886,-"
+    },
+    "DS Automobiles": {
+      "DS 3": "€ 579,-",
+      "DS 3 E-TENSE": "€ 629,-",
+      "N°4 Plug-in Hybrid": "€ 749,-",
+      "N°4 Elektrisch": "€ 719,-",
+      "DS 7": "€ 844,-",
+      "N°7": "€ 749,-",
+      "N°8": "€ 919,-"
+    },
+    "Opel": {
+      "Rocks": "€ 176,-",
+      "Corsa": "€ 446,-",
+      "Corsa Electric": "€ 452,-",
+      "Mokka": "€ 577,-",
+      "Mokka Electric": "€ 587,-",
+      "Frontera": "€ 520,-",
+      "Frontera Electric": "€ 427,-",
+      "Astra 5-deurs": "€ 646,-",
+      "Astra Electric": "€ 669,-",
+      "Astra Sports Tourer": "€ 661,-",
+      "Astra Sports Tourer Electric": "€ 696,-",
+      "Grandland": "€ 745,-",
+      "Grandland Electric": "€ 682,-"
+    },
+    "Fiat": {
+      "500": "€ 499,-",
+      "500e": "€ 397,-",
+      "600": "€ 590,-",
+      "600e": "€ 517,-",
+      "Grande Panda": "€ 497,-",
+      "Grande Panda e": "€ 432,-",
+      "Pandina": "€ 397,-",
+      "Topolino": "€ 166,-"
+    },
+    "Alfa Romeo": {
+      "Junior (Elektrisch)": "€ 479,-",
+      "Tonale (Elektrisch)": "€ 713,-"
+    },
+    "Jeep": {
+      "Avenger (Elektrisch)": "€ 495,-",
+      "Compass (Elektrisch)": "€ 746,-"
+    },
+    "Abarth": {
+      "500e cabriolet": "€ 594,-",
+      "500e hatchback": "€ 555,-",
+      "600e": "€ 630,-"
+    },
+    "Lancia": {
+      "Ypsilon": "€ 525,-",
+      "Ypsilon MHEV": "€ 419,-"
+    },
+    "Leapmotor": {
+      "T03": "€ 302,-",
+      "B03X": "€ 427,-",
+      "B05": "€ 486,-",
+      "B10": "€ 516,-",
+      "C10": "€ 629,-"
+    }
   }
 }
